@@ -116,7 +116,7 @@ Based on [claude-code frontend-design skill](https://github.com/anthropics/claud
 ```html
 <footer style="color: #666; font-size: 0.875rem; text-align: center; margin-top: 3rem;">
     Powered by <a href="https://sweatstack.no" style="color: #666;">SweatStack</a> ·
-    Built with <a href="https://sweatstack.no/skills" style="color: #666;">Skills</a>
+    Built with <a href="https://github.com/sweatStack/sweatstack-skills" style="color: #666;">Skills</a>
 </footer>
 ```
 
