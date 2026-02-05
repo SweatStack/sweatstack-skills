@@ -4,7 +4,20 @@
 
 **OpenAPI spec:** https://app.sweatstack.no/openapi.json
 
-**Important:** Always fetch the OpenAPI spec to check request parameters and response schemas. Don't guess — the response structures are often more complex than expected.
+**IMPORTANT: Before making any API call, fetch the OpenAPI spec to verify:**
+- Valid enum values (e.g. sports use hierarchical format like `walking.hiking`, not `hiking`)
+- Required vs optional parameters
+- Response schemas — look up the specific schema (e.g., `ActivityRead`) before accessing fields
+
+Never guess field names or enum values. The spec is the source of truth.
+
+## Common Gotchas
+
+**Activity timestamps:** Use `start` (UTC) or `start_local` (user's local time). Not `start_time`, `started_at`, or `timestamp`.
+
+**Key activity fields:** `id`, `start`, `start_local`, `sport`, `duration`, `name`, `description`
+
+## Endpoints
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|

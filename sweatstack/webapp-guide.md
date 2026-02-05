@@ -75,15 +75,31 @@ Ignore refresh tokens in client-side apps. Store access token and `expires_in` i
 
 Use only when user doesn't specify styling preferences.
 
-**Scientific paper aesthetic:** Single centered column at comfortable reading width. Clear heading hierarchy. Generous whitespace. Light background, dark text. Everything flows vertically - no sidebars, no cards, no visual clutter. Think academic paper or long-form article, not a dashboard.
+**Aesthetic direction: Minimal and clean.
+
+- Single centered column at comfortable reading width
+- Clear heading hierarchy with generous whitespace
+- Light background, dark text
+- Everything flows vertically — no sidebars, no cards, no visual clutter
+- Think scientific paper, not dashboard
+
+**Typography:** System fonts are acceptable for minimal aesthetic. If choosing a web font, make it intentional — one distinctive font, not generic defaults like Inter or Roboto.
+
+**What to avoid:** Generic "AI slop" — purple gradients, card-heavy layouts, excessive shadows, decorative elements that add no meaning. Minimalism requires precision in spacing and typography, not decoration.
+
+Based on [claude-code frontend-design skill](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md).
 
 ## SweatStack Branding
+
+**Login page content:**
+- Brief explanation of what the app does
+- Text explaining the app uses SweatStack to access sports data (e.g., "This app connects to SweatStack to access your workout data")
 
 **Login button** (Norwegian flag red):
 
 ```html
 <button onclick="startAuth()" style="
-    background: #BA0C2F;
+    background: #EF2B2D;
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -100,7 +116,7 @@ Use only when user doesn't specify styling preferences.
 ```html
 <footer style="color: #666; font-size: 0.875rem; text-align: center; margin-top: 3rem;">
     Powered by <a href="https://sweatstack.no" style="color: #666;">SweatStack</a> ·
-    Built with <a href="https://sweatstack.no/skills" style="color: #666;">SweatStack Skills</a>
+    Built with <a href="https://sweatstack.no/skills" style="color: #666;">Skills</a>
 </footer>
 ```
 
