@@ -6,17 +6,19 @@
 
 **Claude Code** (current project):
 ```sh
-curl -LsSf https://raw.githubusercontent.com/sweatstack/sweatstack-skills/main/install.sh | sh
+curl -LsSf https://sweatstack.no/install-skills | sh
 ```
 
 **Claude Code** (global, all projects):
 ```sh
-curl -LsSf https://raw.githubusercontent.com/sweatstack/sweatstack-skills/main/install.sh | sh -s -- --global
+curl -LsSf https://sweatstack.no/install-skills | sh -s -- --global
 ```
 
 **Claude.ai**: Zip the `sweatstack/` folder and upload in Settings → Features → Skills.
 
 **Windows**: Use [Git Bash](https://git-scm.com/download/win) or WSL.
+
+The install URL redirects to [`install.sh`](install.sh). Inspect it before running.
 
 ## What's this?
 
