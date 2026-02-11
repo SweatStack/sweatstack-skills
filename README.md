@@ -2,6 +2,22 @@
 
 [Agent Skills](https://agentskills.io) for building apps with [SweatStack](https://sweatstack.no), the sports data platform for developers.
 
+## Install
+
+**Claude Code** (current project):
+```sh
+curl -LsSf https://raw.githubusercontent.com/sweatstack/sweatstack-skills/main/install.sh | sh
+```
+
+**Claude Code** (global, all projects):
+```sh
+curl -LsSf https://raw.githubusercontent.com/sweatstack/sweatstack-skills/main/install.sh | sh -s -- --global
+```
+
+**Claude.ai**: Zip the `sweatstack/` folder and upload in Settings → Features → Skills.
+
+**Windows**: Use [Git Bash](https://git-scm.com/download/win) or WSL.
+
 ## What's this?
 
 Skills are instruction manuals that AI coding assistants can read. Install once, and your AI assistant knows how to work with SweatStack: OAuth flows, API endpoints, data formats, all of it.
@@ -11,34 +27,14 @@ Once installed, just ask your AI assistant things like:
 - *"Build me a SweatStack app that shows my recent activities"*
 - *"Create a training zone calculator using SweatStack"*
 
-This repo contains skills for developing with SweatStack. For example, quickly building single-file HTML web apps that visualize your sports data.
-
 ## What's included
 
-The [`sweatstack`](sweatstack/) skill includes:
+The [`sweatstack`](sweatstack/) skill covers:
 
 | Guide | Description |
 |-------|-------------|
-| [webapp-guide.md](sweatstack/webapp-guide.md) | Building single-file HTML web apps. Covers OAuth PKCE, styling, branding, deployment. |
+| [webapp-guide.md](sweatstack/webapp-guide.md) | Building single-file HTML web apps. OAuth PKCE, styling, branding, deployment. |
 | [api.md](sweatstack/api.md) | API reference. Endpoints, Parquet parsing, metrics, common gotchas. |
-
-## Installation
-
-### Claude.ai
-
-Upload the skill ZIP in Settings → Features → Skills.
-
-See [Using Skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude) for details.
-
-### Claude Code
-
-Copy the `sweatstack/` folder to `~/.claude/skills/` (personal) or `.claude/skills/` (project).
-
-See [Skills in Claude Code](https://code.claude.com/docs/en/skills) for details.
-
-### Other tools
-
-Agent Skills are an [open format](https://agentskills.io) supported by Cursor, VS Code, and others. Check your tool's docs.
 
 ## Prerequisites
 
@@ -46,9 +42,8 @@ You'll need a SweatStack account and a registered app to get a Client ID. Create
 
 ## Learn more
 
-- [Agent Skills overview](https://claude.com/skills)
 - [SweatStack](https://sweatstack.no)
-- [agentskills.io](https://agentskills.io)
+- [Agent Skills](https://agentskills.io)
 
 ## About
 
