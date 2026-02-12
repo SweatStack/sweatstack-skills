@@ -3,6 +3,7 @@
 ## Contents
 
 - [Endpoints](#endpoints)
+- [Choosing the Right Endpoint](#choosing-the-right-endpoint)
 - [Parquet Responses](#parquet-responses)
 - [Metrics Parameter](#metrics-parameter)
 - [Available Metrics](#available-metrics)
@@ -29,6 +30,8 @@ Never guess field names or enum values. The spec is the source of truth.
 
 **Key activity fields:** `id`, `start`, `start_local`, `sport`, `duration`, `name`, `description`
 
+**Date parameters:** Use `YYYY-MM-DD` format. Most endpoints reject timestamps.
+
 ## Endpoints
 
 | Endpoint | Method | Purpose |
@@ -41,9 +44,17 @@ Never guess field names or enum values. The spec is the source of truth.
 | `/api/v1/profile/metabolic-map` | GET | Zone thresholds (returns Parquet) |
 | `/api/v1/profile/tags/` | GET | User-defined tags |
 | `/api/v1/profile/sports/` | GET | Available sports hierarchy |
-| `/api/v1/longitudinal-data` | GET | Aggregate data (returns Parquet) |
+| `/api/v1/longitudinal-data` | GET | Timeseries data across activities. Allows extensive filtering on sports and metrics. (returns Parquet) |
 | `/api/v1/longitudinal-mean-max` | GET | Historical mean-max (returns Parquet) |
 | `/api/v1/oauth/userinfo` | GET | Current user info |
+
+**Critical**: Never guess request paramaters or body schemas. Use the openapi.json when not sure.
+
+## Choosing the Right Endpoint
+
+**Multi-activity analysis** (trends, distributions, comparisons): Use `/longitudinal-data` — one request for all matching activities.
+
+**Single activity** (detail view, route map): Use `/activities/{id}/data`.
 
 ## Parquet Responses
 
