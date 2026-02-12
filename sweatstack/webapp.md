@@ -119,8 +119,10 @@ Use only when user doesn't specify styling preferences.
 
 ## Deployment
 
+**Only deploy when explicitly requested.** Let user test locally first.
+
 ```bash
-npx wrangler pages deploy .
+sweatstack page deploy <slug> .
 ```
 
 ## Reference Apps
