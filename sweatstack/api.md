@@ -6,6 +6,7 @@
 - [Parquet Responses](#parquet-responses)
 - [Metrics Parameter](#metrics-parameter)
 - [Available Metrics](#available-metrics)
+- [GPS Data](#gps-data)
 - [Sports](#sports)
 - [Authentication](#authentication)
 
@@ -104,6 +105,10 @@ Pass multiple times for multiple metrics:
 ## Available Metrics
 
 duration, power, speed, heart_rate, cadence, altitude, latitude, longitude, temperature, core_temperature, smo2, distance, lactate, RPE
+
+## GPS Data
+
+Filter out invalid coordinates: `(0, 0)` is "Null Island" — a common placeholder for missing GPS data. Check for 0 values, not just null/NaN.
 
 ## Sports
 

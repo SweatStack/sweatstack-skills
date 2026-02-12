@@ -66,13 +66,17 @@ const API_BASE = 'https://app.sweatstack.no/api/v1';
 
 Use only when user doesn't specify styling preferences.
 
-**Aesthetic direction: Minimal and clean.
+**Aesthetic direction:** Minimal and clean. Think scientific paper, not dashboard.
 
-- Single centered column at comfortable reading width
+**Layout:**
+- Centered container, `max-width: 48rem`
+- Visual elements fill container width
+- Full-width only for apps that are primarily visual (e.g., mapping app)
+
+**Styling:**
 - Clear heading hierarchy with generous whitespace
 - Light background, dark text
 - Everything flows vertically — no sidebars, no cards, no visual clutter
-- Think scientific paper, not dashboard
 
 **Typography:** System fonts are acceptable for minimal aesthetic. If choosing a web font, make it intentional — one distinctive font, not generic defaults like Inter or Roboto.
 
