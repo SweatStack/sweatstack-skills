@@ -32,6 +32,8 @@ Never guess field names or enum values. The spec is the source of truth.
 
 **Date parameters:** Use `YYYY-MM-DD` format. Most endpoints reject timestamps.
 
+**Parameter naming:** Longitudinal endpoints use `sports` (plural), activity list uses `sport` (singular).
+
 ## Endpoints
 
 | Endpoint | Method | Purpose |
@@ -41,18 +43,17 @@ Never guess field names or enum values. The spec is the source of truth.
 | `/api/v1/activities/{id}/data` | GET | Timeseries data (returns Parquet) |
 | `/api/v1/activities/latest` | GET | Most recent activity |
 | `/api/v1/activities/upload` | POST | Upload .fit files (max 10) |
-| `/api/v1/profile/metabolic-map` | GET | Zone thresholds (returns Parquet) |
 | `/api/v1/profile/tags/` | GET | User-defined tags |
 | `/api/v1/profile/sports/` | GET | Available sports hierarchy |
-| `/api/v1/longitudinal-data` | GET | Timeseries data across activities. Allows extensive filtering on sports and metrics. (returns Parquet) |
-| `/api/v1/longitudinal-mean-max` | GET | Historical mean-max (returns Parquet) |
+| `/api/v1/activities/longitudinal-data` | GET | Timeseries data across activities. Allows extensive filtering on sports and metrics. (returns Parquet) |
+| `/api/v1/activities/longitudinal-mean-max` | GET | Historical mean-max (returns Parquet) |
 | `/api/v1/oauth/userinfo` | GET | Current user info |
 
 **Critical**: Never guess request paramaters or body schemas. Use the openapi.json when not sure.
 
 ## Choosing the Right Endpoint
 
-**Multi-activity analysis** (trends, distributions, comparisons): Use `/longitudinal-data` — one request for all matching activities.
+**Multi-activity analysis** (trends, distributions, comparisons): Use `/activities/longitudinal-data` — one request for all matching activities.
 
 **Single activity** (detail view, route map): Use `/activities/{id}/data`.
 
