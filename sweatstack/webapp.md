@@ -30,7 +30,15 @@ UI can be minimal - focus on functionality. Auth and API error handling must be 
 
 Requires a **Client ID** from a SweatStack application.
 
-Create one at https://app.sweatstack.no/applications/new with: Name, Description, URL, Image URL, Redirect URIs (HTTPS), Privacy Policy URL.
+**If user provides a client_id:** Use it directly, skip app creation.
+
+**Otherwise, create an app with the SweatStack CLI:**
+1. Derive app name from the task (e.g., "heart rate analyzer" → "Heart Rate Analyzer")
+2. Generate page slug from app name: lowercase, spaces to hyphens (e.g., "heart-rate-analyzer")
+3. Create the app with the sweatstack cli
+4. If slug is rejected, prompt user for alternative
+
+Prompt user for app name only if it cannot be reasonably inferred from the task.
 
 ## Authentication
 

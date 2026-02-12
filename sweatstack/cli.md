@@ -21,9 +21,10 @@ Verify with `sweatstack --version`. Alternative: `uv pip install sweatstack-cli`
 ```bash
 sweatstack login     # Opens browser for OAuth2, stores credentials locally
 sweatstack logout    # Remove stored credentials
-sweatstack whoami    # Display authenticated user
 sweatstack status    # Show auth status and token details
 ```
+
+Always `sweatstack status` to check if the user is authenticated.
 
 ## Create Applications
 
