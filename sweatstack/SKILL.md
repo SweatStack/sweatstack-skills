@@ -11,14 +11,12 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Default scopes:** `openid profile data:read`
 
-## Guides
+## Reference
 
 **Webapps:** Default approach is single-file HTML with vanilla JS (no build step). See [webapp.md](webapp.md)
 
-**CLI available** for creating apps, deploying static sites, and managing auth. See [cli.md](cli.md)
+**CLI:** Create apps, deploy static sites, manage auth. See [cli.md](cli.md)
 
-## Reference
+**Auth:** OAuth2/OpenID authentication. See [auth.md](auth.md)
 
-**OAuth2/OpenID authentication:** See [auth.md](auth.md)
-
-**API endpoints and data models:** See [api.md](api.md)
+**API:** Endpoints and data models. See [api.md](api.md)
