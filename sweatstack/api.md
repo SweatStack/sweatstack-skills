@@ -103,7 +103,7 @@ Pass multiple times for multiple metrics:
 
 ## Available Metrics
 
-duration, power, speed, heart_rate, cadence, altitude, temperature, core_temperature, smo2, distance, lactate, RPE
+duration, power, speed, heart_rate, cadence, altitude, latitude, longitude, temperature, core_temperature, smo2, distance, lactate, RPE
 
 ## Sports
 
