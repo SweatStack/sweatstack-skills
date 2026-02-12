@@ -77,7 +77,9 @@ Store in sessionStorage. Use as `Authorization: Bearer TOKEN` header.
 
 ### 5. Token lifecycle
 
-Ignore refresh tokens in client-side apps. Store access token and `expires_in` in sessionStorage. When token expires or API returns 401, silently redirect to authorization flow with `prompt=none` to get a new token. User won't see consent screen again.
+**Public apps (no client secret):** For refresh tokens, add `offline_access` to scopes. Otherwise, store access token and `expires_in` in sessionStorage. When token expires or API returns 401, silently redirect to authorization flow with `prompt=none` to get a new token. User won't see consent screen again.
+
+**Private apps (with client secret):** Refresh tokens are returned automatically.
 
 ## HTML Structure
 
