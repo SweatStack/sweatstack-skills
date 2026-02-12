@@ -46,9 +46,11 @@ Browser apps use PKCE flow (public client, no client secret).
 
 **Critical:** Always include `prompt=none` in auth redirects to avoid double consent screens.
 
-**Token storage:** Use sessionStorage, not localStorage. Store both `access_token` and `expires_in`.
+**Token storage:** Use localStorage. Store `access_token` and expiry timestamp.
 
-**Token refresh:** Skip refresh tokens. When token expires or API returns 401, silently redirect to authorization flow with `prompt=none`. User won't see consent screen again.
+**On page load:** No token → show login. Expired token → silent re-auth with `prompt=none`.
+
+**On 401:** Silent re-auth with `prompt=none`.
 
 **Constants to define:**
 ```javascript
