@@ -1,5 +1,19 @@
 # Building Single-File Web Apps
 
+## Contents
+
+- [Tech Stack](#tech-stack)
+- [Quality Bar](#quality-bar)
+- [Prerequisites](#prerequisites)
+- [OAuth 2.0 PKCE Flow](#oauth-20-pkce-flow)
+- [HTML Structure](#html-structure)
+- [Default Styling](#default-styling)
+- [SweatStack Branding](#sweatstack-branding)
+- [Deployment](#deployment)
+- [Reference Apps](#reference-apps)
+
+---
+
 ## Tech Stack
 
 - Single HTML file with inline `<style>` and `<script>`
@@ -87,8 +101,6 @@ Use only when user doesn't specify styling preferences.
 
 **What to avoid:** Generic "AI slop" — purple gradients, card-heavy layouts, excessive shadows, decorative elements that add no meaning. Minimalism requires precision in spacing and typography, not decoration.
 
-Based on [claude-code frontend-design skill](https://github.com/anthropics/claude-code/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md).
-
 ## SweatStack Branding
 
 **Login page content:**
@@ -127,6 +139,8 @@ npx wrangler pages deploy .
 ```
 
 ## Reference Apps
+
+Study these for patterns:
 
 - **graph.sweatstack.no** - Activity contribution graph
 - **zones.sweatstack.no** - Training zone calculator

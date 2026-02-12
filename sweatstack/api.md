@@ -1,5 +1,16 @@
 # SweatStack API Reference
 
+## Contents
+
+- [Endpoints](#endpoints)
+- [Parquet Responses](#parquet-responses)
+- [Metrics Parameter](#metrics-parameter)
+- [Available Metrics](#available-metrics)
+- [Sports](#sports)
+- [Authentication](#authentication)
+
+---
+
 **Base URL:** `https://app.sweatstack.no`
 
 **OpenAPI spec:** https://app.sweatstack.no/openapi.json
@@ -98,18 +109,17 @@ duration, power, speed, heart_rate, cadence, altitude, temperature, core_tempera
 
 **Formatting sport values for display:**
 
-```python
-parts = sport.split(".")
-base = parts[0].replace("_", " ")
-if len(parts) == 1:
-    return base
-rest = " ".join(parts[1:]).replace("_", " ")
-return f"{base} ({rest})"
-# "cycling.mountain" → "cycling (mountain)"
+```javascript
+function formatSport(sport) {
+    const parts = sport.split(".");
+    const base = parts[0].replace(/_/g, " ");
+    if (parts.length === 1) return base;
+    const rest = parts.slice(1).join(" ").replace(/_/g, " ");
+    return `${base} (${rest})`;
+}
+// "cycling.mountain" → "cycling (mountain)"
 ```
 
 ## Authentication
 
 All endpoints require `Authorization: Bearer TOKEN` header.
-
-See [webapp-guide.md](webapp-guide.md) for OAuth PKCE flow.
