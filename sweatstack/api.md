@@ -116,10 +116,10 @@ Filter invalid coordinates:
 
 ```javascript
 function isValidGPS(lat, lon) {
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return false;
     if (lat < -90 || lat > 90) return false;
     if (lon < -180 || lon > 180) return false;
 
-    // Reject Null Island and garbage floats near origin
     const EPSILON = 1e-6;
     if (Math.abs(lat) < EPSILON && Math.abs(lon) < EPSILON) return false;
 
@@ -127,7 +127,7 @@ function isValidGPS(lat, lon) {
 }
 ```
 
-Catches Null Island (0, 0) and garbage floats like `1e-39` from uninitialized data.
+Catches NaN (from null values), Null Island (0, 0), and garbage floats.
 
 ## Sports
 
