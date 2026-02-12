@@ -4,6 +4,7 @@
 
 - [Endpoints](#endpoints)
 - [Choosing the Right Endpoint](#choosing-the-right-endpoint)
+- [Data Fetching Patterns](#data-fetching-patterns)
 - [Parquet Responses](#parquet-responses)
 - [Metrics Parameter](#metrics-parameter)
 - [Available Metrics](#available-metrics)
@@ -56,6 +57,14 @@ Never guess field names or enum values. The spec is the source of truth.
 **Multi-activity analysis** (trends, distributions, comparisons): Use `/activities/longitudinal-data` — one request for all matching activities.
 
 **Single activity** (detail view, route map): Use `/activities/{id}/data`.
+
+## Data Fetching Patterns
+
+**Time window comparisons:** Fetch the larger window once, filter client-side. Avoid multiple requests for overlapping or adjacent ranges.
+
+**Bulk activity data:** Need data from many activities? Use `/activities/longitudinal-data` with filters instead of looping through `/activities/{id}/data` — one request vs N.
+
+**Per-activity stats:** Longitudinal endpoints return raw samples with `activity_id`. Use DuckDB to aggregate: `GROUP BY activity_id`.
 
 ## Parquet Responses
 
