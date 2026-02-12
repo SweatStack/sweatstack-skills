@@ -13,9 +13,9 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 ## Guides
 
-**Building a single-file webapp?** See [webapp-guide.md](webapp-guide.md)
+**Webapps:** Default approach is single-file HTML with vanilla JS (no build step). See [webapp.md](webapp.md)
 
-**CLI available** for creating apps, deploying static sites, and managing auth. See [cli-guide.md](cli-guide.md)
+**CLI available** for creating apps, deploying static sites, and managing auth. See [cli.md](cli.md)
 
 ## Reference
 
