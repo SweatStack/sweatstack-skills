@@ -55,10 +55,8 @@ if [ -d "$TARGET_DIR" ]; then
             *) echo "Aborted."; exit 0 ;;
         esac
     else
-        echo "Directory $TARGET_DIR already exists."
-        echo "To update, run interactively or remove it first:"
-        echo "  rm -rf \"$TARGET_DIR\""
-        exit 0
+        rm -rf "$TARGET_DIR"
+        UPDATING=1
     fi
 fi
 
@@ -72,4 +70,8 @@ trap 'rm -rf "$TEMP_DIR"' EXIT
 git clone --depth 1 --quiet "$REPO_URL" "$TEMP_DIR/repo"
 mv "$TEMP_DIR/repo/$SKILL_NAME" "$TARGET_DIR"
 
-echo "Installed SweatStack skills to: $TARGET_DIR"
+if [ "${UPDATING:-0}" = "1" ]; then
+    echo "Updated SweatStack skills at: $TARGET_DIR"
+else
+    echo "Installed SweatStack skills to: $TARGET_DIR"
+fi
