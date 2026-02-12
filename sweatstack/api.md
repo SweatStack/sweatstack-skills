@@ -47,9 +47,13 @@ Never guess field names or enum values. The spec is the source of truth.
 
 ## Parquet Responses
 
-Data endpoints return **Parquet files (snappy-compressed)**. Use DuckDB-WASM to parse in browser - it has full codec support including snappy.
+Data endpoints return **Parquet files (snappy-compressed)**. Your Parquet library must support snappy codec.
 
-### Setup (once at startup)
+**Browser apps:** Use DuckDB-WASM (recommended - full codec support, reliable CDN).
+
+**Other environments:** Any Parquet library with snappy support.
+
+### DuckDB-WASM Setup (browser)
 
 ```javascript
 import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/+esm';
@@ -91,7 +95,7 @@ const data = await parseParquet(await response.arrayBuffer());
 // data = { altitude: [...], distance: [...] }
 ```
 
-**Why DuckDB-WASM?** Other libraries (parquet-wasm, hyparquet) lack snappy codec support or have CDN issues. DuckDB-WASM is heavier (~10MB) but reliable.
+**Note:** DuckDB-WASM is ~10MB but reliable. Other browser libraries (parquet-wasm, hyparquet) have codec or CDN issues.
 
 ## Metrics Parameter
 
@@ -108,7 +112,22 @@ duration, power, speed, heart_rate, cadence, altitude, latitude, longitude, temp
 
 ## GPS Data
 
-Filter out invalid coordinates: `(0, 0)` is "Null Island" — a common placeholder for missing GPS data. Check for 0 values, not just null/NaN.
+Filter invalid coordinates:
+
+```javascript
+function isValidGPS(lat, lon) {
+    if (lat < -90 || lat > 90) return false;
+    if (lon < -180 || lon > 180) return false;
+
+    // Reject Null Island and garbage floats near origin
+    const EPSILON = 1e-6;
+    if (Math.abs(lat) < EPSILON && Math.abs(lon) < EPSILON) return false;
+
+    return true;
+}
+```
+
+Catches Null Island (0, 0) and garbage floats like `1e-39` from uninitialized data.
 
 ## Sports
 
