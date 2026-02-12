@@ -19,8 +19,8 @@
 - Single HTML file with inline `<style>` and `<script>`
 - Vanilla JS only (no React, no build step)
 - CDN dependencies when needed (e.g., html2canvas for sharing)
-- sessionStorage for access token
-- localStorage for user preferences
+- localStorage for access token and user preferences
+- DuckDB-WASM for Parquet parsing (supports full SQL for analytics)
 
 ## Quality Bar
 
