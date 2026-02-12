@@ -15,6 +15,8 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Building a single-file webapp?** See [webapp-guide.md](webapp-guide.md)
 
+**CLI available** for creating apps, deploying static sites, and managing auth. See [cli-guide.md](cli-guide.md)
+
 ## Reference
 
 **API endpoints and data models:** See [api.md](api.md)
