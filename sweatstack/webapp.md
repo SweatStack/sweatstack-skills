@@ -44,6 +44,8 @@ Prompt user for app name only if it cannot be reasonably inferred from the task.
 
 Browser apps use PKCE flow (public client, no client secret).
 
+**Critical:** Always include `prompt=none` in auth redirects to avoid double consent screens.
+
 **Token storage:** Use sessionStorage, not localStorage. Store both `access_token` and `expires_in`.
 
 **Token refresh:** Skip refresh tokens. When token expires or API returns 401, silently redirect to authorization flow with `prompt=none`. User won't see consent screen again.
