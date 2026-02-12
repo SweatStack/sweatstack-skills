@@ -5,7 +5,7 @@
 - [Tech Stack](#tech-stack)
 - [Quality Bar](#quality-bar)
 - [Prerequisites](#prerequisites)
-- [OAuth 2.0 PKCE Flow](#oauth-20-pkce-flow)
+- [Authentication](#authentication)
 - [HTML Structure](#html-structure)
 - [Default Styling](#default-styling)
 - [SweatStack Branding](#sweatstack-branding)
@@ -28,64 +28,31 @@ UI can be minimal - focus on functionality. Auth and API error handling must be 
 
 ## Prerequisites
 
-Create a SweatStack application at https://app.sweatstack.no/applications/new
+Requires a **Client ID** from a SweatStack application.
 
-Required fields: Name, Description, URL, Image URL, Redirect URIs (HTTPS), Privacy Policy URL
+Create one at https://app.sweatstack.no/applications/new with: Name, Description, URL, Image URL, Redirect URIs (HTTPS), Privacy Policy URL.
 
-Save to get your **Client ID**.
+## Authentication
 
-## OAuth 2.0 PKCE Flow
+Browser apps use PKCE flow (public client, no client secret).
 
-### 1. Generate PKCE pair
+**Token storage:** Use sessionStorage, not localStorage. Store both `access_token` and `expires_in`.
 
-- Code verifier: random string (43-128 chars)
-- Code challenge: base64url(SHA-256(verifier))
+**Token refresh:** Skip refresh tokens. When token expires or API returns 401, silently redirect to authorization flow with `prompt=none`. User won't see consent screen again.
 
-### 2. Redirect to authorize
-
+**Constants to define:**
+```javascript
+const CLIENT_ID = '...';
+const REDIRECT_URI = '...';
+const AUTH_URL = 'https://app.sweatstack.no/oauth/authorize';
+const TOKEN_URL = 'https://app.sweatstack.no/api/v1/oauth/token';
+const API_BASE = 'https://app.sweatstack.no/api/v1';
 ```
-https://app.sweatstack.no/oauth/authorize?
-  client_id=CLIENT_ID&
-  redirect_uri=REDIRECT_URI&
-  response_type=code&
-  scope=openid%20profile%20data:read&
-  code_challenge=CHALLENGE&
-  code_challenge_method=S256&
-  prompt=none
-```
-
-**Critical:** Always include `prompt=none` to avoid double consent screens.
-
-### 3. Exchange code for token
-
-```
-POST https://app.sweatstack.no/api/v1/oauth/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=authorization_code&
-code=AUTH_CODE&
-redirect_uri=REDIRECT_URI&
-client_id=CLIENT_ID&
-code_verifier=VERIFIER
-```
-
-Response: `{ access_token, token_type, expires_in }`
-
-### 4. Use token
-
-Store in sessionStorage. Use as `Authorization: Bearer TOKEN` header.
-
-### 5. Token lifecycle
-
-**Public apps (no client secret):** For refresh tokens, add `offline_access` to scopes. Otherwise, store access token and `expires_in` in sessionStorage. When token expires or API returns 401, silently redirect to authorization flow with `prompt=none` to get a new token. User won't see consent screen again.
-
-**Private apps (with client secret):** Refresh tokens are returned automatically.
 
 ## HTML Structure
 
 - Auth container (login button): shown when no token
 - App container (main UI): shown after authentication
-- Define constants: CLIENT_ID, REDIRECT_URI, AUTH_URL, TOKEN_URL, API_BASE
 
 ## Default Styling
 

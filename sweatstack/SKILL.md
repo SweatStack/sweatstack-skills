@@ -11,8 +11,6 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Default scopes:** `openid profile data:read`
 
-**For refresh tokens in public apps:** Add `offline_access` scope (private apps get refresh tokens automatically)
-
 ## Guides
 
 **Building a single-file webapp?** See [webapp-guide.md](webapp-guide.md)
@@ -20,5 +18,7 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 **CLI available** for creating apps, deploying static sites, and managing auth. See [cli-guide.md](cli-guide.md)
 
 ## Reference
+
+**OAuth2/OpenID authentication:** See [auth.md](auth.md)
 
 **API endpoints and data models:** See [api.md](api.md)
