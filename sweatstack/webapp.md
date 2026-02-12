@@ -51,7 +51,7 @@ Browser apps use PKCE flow (public client, no client secret).
 **Constants to define:**
 ```javascript
 const CLIENT_ID = '...';
-const REDIRECT_URI = '...';
+const REDIRECT_URI = window.location.origin + window.location.pathname; // Works for localhost and production
 const AUTH_URL = 'https://app.sweatstack.no/oauth/authorize';
 const TOKEN_URL = 'https://app.sweatstack.no/api/v1/oauth/token';
 const API_BASE = 'https://app.sweatstack.no/api/v1';
