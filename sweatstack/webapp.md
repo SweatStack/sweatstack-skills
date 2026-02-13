@@ -3,13 +3,14 @@
 ## Contents
 
 - [Tech Stack](#tech-stack)
+- [Output Location](#output-location)
 - [Quality Bar](#quality-bar)
 - [Prerequisites](#prerequisites)
 - [Authentication](#authentication)
 - [HTML Structure](#html-structure)
 - [Default Styling](#default-styling)
 - [SweatStack Branding](#sweatstack-branding)
-- [Deployment](#deployment)
+- [After Generation](#after-generation)
 - [Reference Apps](#reference-apps)
 
 ---
@@ -21,6 +22,10 @@
 - CDN dependencies when needed (e.g., html2canvas for sharing)
 - localStorage for access token and user preferences
 - DuckDB-WASM for Parquet parsing (supports full SQL for analytics)
+
+## Output Location
+
+Place generated files in `public/index.html`. Creates a deployment-ready structure.
 
 ## Quality Bar
 
@@ -117,13 +122,13 @@ Use only when user doesn't specify styling preferences.
 </footer>
 ```
 
-## Deployment
+## After Generation
 
-**Only deploy when explicitly requested.** Let user test locally first.
+**Preview locally:** Suggest user start a local file server in the `public/` directory.
 
-```bash
-sweatstack page deploy <slug> .
-```
+**Next steps to mention:**
+- **Deploy to the web:** `sweatstack page deploy <slug> ./public`
+- **Make available to other users:** Add privacy policy and app description at `https://app.sweatstack.no/applications/{APP_ID}`
 
 ## Reference Apps
 
