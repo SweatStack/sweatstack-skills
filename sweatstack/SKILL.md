@@ -13,10 +13,12 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 ## Reference
 
-**Webapps:** Default approach is single-file HTML with vanilla JS (no build step). See [webapp.md](webapp.md)
+**Webapps:** Single-file HTML apps with vanilla JS. See [webapp.md](webapp.md)
 
-**CLI:** Create apps, deploy static sites, manage auth. See [cli.md](cli.md)
+**PyScript webapps:** Python data science in the browser (pandas, sklearn, scipy). Trade-offs and template. See [pyscript.md](pyscript.md)
 
-**Auth:** OAuth2/OpenID authentication. See [auth.md](auth.md)
+**CLI:** App management and deployment. See [cli.md](cli.md)
 
-**API:** Endpoints and data models. See [api.md](api.md)
+**Auth:** OAuth2/PKCE authentication. See [auth.md](auth.md)
+
+**API:** Endpoints and data formats. See [api.md](api.md)
