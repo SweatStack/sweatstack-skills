@@ -21,10 +21,26 @@ Verify with `sweatstack --version`. Alternative: `uv pip install sweatstack-cli`
 ```bash
 sweatstack login     # Opens browser for OAuth2, stores credentials locally
 sweatstack logout    # Remove stored credentials
-sweatstack status    # Show auth status and token details
+sweatstack status    # Show authentication and version status
 ```
 
 Always `sweatstack status` to check if the user is authenticated.
+
+## Project Configuration
+
+The CLI uses `sweatstack.toml` to store project configuration. Created automatically by `sweatstack app create` or `sweatstack app link`.
+
+```toml
+[app]
+name = "My App"
+client_id = "abc123"
+
+[page]
+slug = "my-page"
+directory = "dist"
+```
+
+When present, commands like `sweatstack page deploy` read defaults from this file — no arguments needed.
 
 ## Create Applications
 
@@ -49,13 +65,25 @@ sweatstack app create "My Streamlit App" --page my-streamlit-app --secret --env-
 
 Creates a private application. Public apps require the web dashboard. Page slugs can be rejected if unavailable.
 
+### Link Existing Application
+
+```bash
+sweatstack app link
+```
+
+Prompts to select from existing applications and creates `sweatstack.toml` in the current directory.
+
 ## Deploy Static Sites
 
 ```bash
+# With sweatstack.toml in the directory
+sweatstack page deploy
+
+# Or specify explicitly
 sweatstack page deploy myapp ./dist
 ```
 
-Uploads files to `https://myapp.sweatstack.pages.dev`.
+Uploads files to `https://myapp.pages.sweatstack.dev`.
 
 **Constraints:**
 - Pages must be pre-created via dashboard: https://app.sweatstack.no/settings/api
