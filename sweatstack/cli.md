@@ -52,18 +52,28 @@ sweatstack app create "My App"
 
 | Flag | Purpose |
 |------|---------|
+| `--description` / `-d` | App description |
 | `--page myapp` | Associate with a SweatStack Page (auto-configures redirect URI) |
 | `--secret` | Generate client secret for confidential clients |
 | `--env` | Write credentials to `.env` file |
 | `--env-file PATH` | Write credentials to specific file |
 | `--json` | Output as JSON for scripting |
 
-**Full example:**
+**Minimal:**
 ```bash
-sweatstack app create "My Streamlit App" --page my-streamlit-app --secret --env-file .env.local
+sweatstack app create "My App" -d "Heart rate zone calculator"
 ```
 
-Creates a private application. Public apps require the web dashboard. Page slugs can be rejected if unavailable.
+**Full example:**
+```bash
+sweatstack app create "My App" -d "Heart rate zone calculator" --page my-app --secret --env-file .env.local
+```
+
+Creates a private application. Page slugs can be rejected if unavailable.
+
+### Publishing
+
+Apps start as private. After `sweatstack page deploy`, the CLI prints a publish URL if the app is still private: `https://app.sweatstack.no/applications/{app_id}/publish`. Surface this URL to the user when they're ready to go live.
 
 ### Link Existing Application
 
