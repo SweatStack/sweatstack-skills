@@ -31,3 +31,8 @@ Clone the template to start. The README covers setup, the ctx API, parameter pat
 
 - **Only edit `main.py` and `index.html`.** Do not generate or modify `app.js`, `worker.py`, `runtime.py`, CSS, or `mini-coi.js` — these are framework files maintained by the template.
 - The template includes 4 working examples (`examples/`) — use these as reference for different patterns (single activity, multi-parameter, ML pipelines).
+
+## Pyodide Gotchas
+
+- **Duration column**: Has unreliable dtype across environments. Do not use as a numeric time axis. Sort by `duration` for ordering, then use `np.arange(len(df))` for seconds-from-start (data is 1-second sampled).
+- **Large datasets**: Longitudinal data spanning months can be 100k+ rows. Downsample for ML training to keep browser-side computation fast (~80k rows max for sklearn).
