@@ -10,7 +10,6 @@
 - [Available Metrics](#available-metrics)
 - [GPS Data](#gps-data)
 - [Sports](#sports)
-- [Python Client](#python-client)
 - [Authentication](#authentication)
 
 ---
@@ -42,7 +41,7 @@ Never guess field names or enum values. The spec is the source of truth.
 
 **Parameter naming:** Longitudinal endpoints use `sports` (plural), activity list uses `sport` (singular).
 
-**Duration column in data endpoints:** The `duration` column in parquet responses has unreliable dtype behavior across environments (Timedelta unit mismatches in Pyodide/pandas). Do not use it as a numeric time axis. Instead, sort by `duration` for temporal ordering, then use `np.arange(len(df))` for seconds-from-start — the data is 1-second sampled.
+**Duration column in data endpoints:** The `duration` column in parquet responses has unreliable dtype behavior across environments. Do not use it as a numeric time axis. Sort by `duration` for temporal ordering, then use row index for seconds-from-start — the data is 1-second sampled.
 
 ## Endpoints
 
@@ -173,16 +172,6 @@ function formatSport(sport) {
 }
 // "cycling.mountain" → "cycling (mountain)"
 ```
-
-## Python Client
-
-Used in PyScript apps via `from sweatstack import Client`.
-
-`client.get_activity_data(id, metrics=[...])` → DataFrame with columns: `duration` (Timedelta) + requested metrics.
-
-`client.get_longitudinal_data(sports=[...], metrics=[...], start=..., end=...)` → DataFrame with columns: `activity_id`, `duration` (Timedelta) + requested metrics. Use `groupby("activity_id")` for per-activity operations.
-
-**Large datasets:** Longitudinal queries spanning months can return 100k+ rows. Downsample for ML training (~80k rows max for sklearn in Pyodide).
 
 ## Authentication
 

@@ -15,8 +15,6 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Webapps:** Single-file HTML apps with vanilla JS. See [webapp.md](webapp.md)
 
-**PyScript webapps:** Python data science in the browser (pandas, sklearn, scipy). Trade-offs and template. See [pyscript.md](pyscript.md)
-
 **CLI:** App management and deployment. See [cli.md](cli.md)
 
 **Auth:** OAuth2/PKCE authentication. See [auth.md](auth.md)
