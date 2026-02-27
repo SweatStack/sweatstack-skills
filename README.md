@@ -4,21 +4,13 @@
 
 ## Install
 
-**Claude Code** (current project):
 ```sh
-curl -LsSf https://sweatstack.no/install-skills | sh
+npx skills add SweatStack/sweatstack-skills
 ```
 
-**Claude Code** (global, all projects):
-```sh
-curl -LsSf https://sweatstack.no/install-skills | sh -s -- --global
-```
+This works with Claude Code, Cursor, Codex, and [40+ other agents](https://github.com/vercel-labs/skills). Install globally with `-g`, or target a specific agent with `-a claude-code`.
 
 **Claude.ai**: Zip the `sweatstack/` folder and upload in Settings → Features → Skills.
-
-**Windows**: Use [Git Bash](https://git-scm.com/download/win) or WSL.
-
-The install URL redirects to [`install.sh`](install.sh). Inspect it before running.
 
 ## What's this?
 
