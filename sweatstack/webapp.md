@@ -53,9 +53,25 @@ Browser apps use PKCE flow (public client, no client secret).
 
 **Token storage:** Use localStorage. Store `access_token` and expiry timestamp.
 
-**On page load:** No token → show login. Expired token → silent re-auth with `prompt=none`.
+**On page load:** No valid token + returning user cookie → redirect to auth automatically. No valid token + no cookie → show login button.
 
 **On 401:** Silent re-auth with `prompt=none`.
+
+### Returning User Cookie
+
+On successful token exchange (OAuth callback), set a non-expiring cookie:
+
+```javascript
+document.cookie = "ss_known=1; path=/; max-age=2147483647; SameSite=Lax";
+```
+
+On page load, if this cookie is set but no valid token exists, skip the login button and redirect straight to auth. The auth server session handles the rest — returning users authenticate without extra clicks.
+
+On logout, delete the cookie:
+
+```javascript
+document.cookie = "ss_known=; path=/; max-age=0";
+```
 
 **Constants to define:**
 ```javascript
@@ -111,7 +127,7 @@ Use only when user doesn't specify styling preferences.
 ">Connect with SweatStack</button>
 ```
 
-**Logout button:** Top right of main content area (not viewport). Clears sessionStorage and returns to login view.
+**Logout button:** Top right of main content area (not viewport). Clears stored tokens, deletes the `ss_known` cookie, and returns to login view.
 
 **Footer** (always present):
 
