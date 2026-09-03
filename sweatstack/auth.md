@@ -134,3 +134,18 @@ All API requests require the Authorization header:
 ```
 Authorization: Bearer ACCESS_TOKEN
 ```
+
+## Token Lifecycle
+
+- **Access token**: JWT, RS256, 15-minute TTL. Carries the standard `exp` claim. Decode it locally to know when to refresh; no network call needed. The token response also includes `expires_in` (seconds) for clients that prefer not to parse the JWT.
+- **Refresh token**: no expiry until the user revokes the app's permissions. Apps used sporadically (a user opens once a month) refresh successfully without re-auth as long as the refresh token still works.
+
+Treat `401` as "refresh and retry once", not "send the user back through OAuth".
+
+## Redirect URIs
+
+Registered redirect URIs accept both `http://` and `https://` schemes (validated as `AnyHttpUrl`). Pattern matching is prefix/suburl based.
+
+- **HTTPS redirect URIs work directly** for native apps using iOS [Universal Links](https://developer.apple.com/ios/universal-links/) or Android [App Links](https://developer.android.com/training/app-links). No custom URL scheme is required, and **no relay or proxy is needed** to bounce a callback into the app.
+- **Custom URL schemes** like `com.example.myapp://oauth/callback` also work. Simpler to set up; fine for v1.
+- **`localhost`** is allowed even when no redirect URIs are configured on the application, to ease local development.

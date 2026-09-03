@@ -27,7 +27,9 @@ The [`sweatstack`](sweatstack/) skill covers:
 
 | Guide | Description |
 |-------|-------------|
-| [webapp-guide.md](sweatstack/webapp-guide.md) | Building single-file HTML web apps. OAuth PKCE, styling, branding, deployment. |
+| [webapp.md](sweatstack/webapp.md) | Building single-file HTML web apps. OAuth PKCE, styling, branding, deployment. |
+| [auth.md](sweatstack/auth.md) | OAuth2/OpenID authentication. PKCE and authorization-code flows, tokens, redirect URIs. |
+| [cli.md](sweatstack/cli.md) | The SweatStack CLI. App management and deployment. |
 | [api.md](sweatstack/api.md) | API reference. Endpoints, Parquet parsing, metrics, common gotchas. |
 
 ## Prerequisites

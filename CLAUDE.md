@@ -6,9 +6,11 @@ Agent Skill for building apps with [SweatStack](https://sweatstack.no), the spor
 
 ```
 sweatstack/
-├── SKILL.md           # Entry point - triggers on SweatStack-related prompts
-├── webapp-guide.md    # OAuth PKCE, single-file HTML patterns
-└── api.md             # Endpoints, data formats, Parquet handling
+├── SKILL.md    # Entry point - triggers on SweatStack-related prompts
+├── webapp.md   # Single-file HTML patterns, styling, branding, deployment
+├── auth.md     # OAuth2/PKCE flows, tokens, redirect URIs
+├── cli.md      # SweatStack CLI: app management and deployment
+└── api.md      # Endpoints, data formats, Parquet handling
 ```
 
 `SKILL.md` is lean (~20 lines) and links to guides. Claude loads guides on-demand based on the task.
@@ -59,7 +61,7 @@ Skills contain only what Claude needs. Don't add:
 ## Editing the Skill
 
 **Add to existing guides** when content fits their scope:
-- OAuth, HTML structure, styling → `webapp-guide.md`
+- HTML structure, styling, branding → `webapp.md`; OAuth/token flows → `auth.md`
 - Endpoints, data models, Parquet → `api.md`
 
 **Create a new guide** when:

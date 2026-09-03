@@ -47,15 +47,22 @@ Prompt user for app name only if it cannot be reasonably inferred from the task.
 
 ## Authentication
 
-Browser apps use PKCE flow (public client, no client secret).
+Browser apps use the PKCE flow (public client, no client secret). SweatStack **is** the app's login: "Sign in with SweatStack" is the whole authentication, and for a first-time user it also creates their SweatStack account and starts backfilling their data. There is no separate signup to build.
 
-**Critical:** Always include `prompt=none` in auth redirects to avoid double consent screens.
+**Token storage:** Use localStorage. Store `access_token` and its expiry timestamp.
 
-**Token storage:** Use localStorage. Store `access_token` and expiry timestamp.
+**Three auth moments, and they must not all use `prompt=none`:**
 
-**On page load:** No valid token + returning user cookie → redirect to auth automatically. No valid token + no cookie → show login button.
+1. **Explicit sign-in** (user clicks "Sign in with SweatStack"): interactive authorize, **no `prompt=none`**. A first-time user has no SweatStack session yet; they must reach the sign-in screen to pick their wearable and onboard. `prompt=none` here comes back with `error=login_required` instead.
+2. **Returning-user silent check** (page load, `ss_known` cookie set, no valid token): authorize **with `prompt=none`**. If the callback returns `error=login_required` / `interaction_required`, fall back to showing the sign-in button.
+3. **Expired token** (`401`): silent re-auth **with `prompt=none`**. On the same error, fall back to the sign-in button.
 
-**On 401:** Silent re-auth with `prompt=none`.
+`prompt=none` exists to spare returning users a redundant consent screen, not to power the first sign-in.
+
+**On page load:**
+- valid token → show the app
+- no token + `ss_known` cookie → silent `prompt=none`; success → app, `login_required` → show the sign-in button
+- no token + no cookie → show the sign-in button
 
 ### Returning User Cookie
 
@@ -65,7 +72,7 @@ On successful token exchange (OAuth callback), set a non-expiring cookie:
 document.cookie = "ss_known=1; path=/; max-age=2147483647; SameSite=Lax";
 ```
 
-On page load, if this cookie is set but no valid token exists, skip the login button and redirect straight to auth. The auth server session handles the rest — returning users authenticate without extra clicks.
+On page load, if this cookie is set but no valid token exists, skip the sign-in button and redirect straight to auth. The auth server session handles the rest, so returning users authenticate without extra clicks.
 
 On logout, delete the cookie:
 
@@ -84,7 +91,7 @@ const API_BASE = 'https://app.sweatstack.no/api/v1';
 
 ## HTML Structure
 
-- Auth container (login button): shown when no token
+- Auth container (sign-in button): shown when no token
 - App container (main UI): shown after authentication
 
 ## Default Styling
@@ -109,32 +116,37 @@ Use only when user doesn't specify styling preferences.
 
 ## SweatStack Branding
 
-**Login page content:**
-- Brief explanation of what the app does
-- Text explaining the app uses SweatStack to access sports data (e.g., "This app connects to SweatStack to access your workout data")
+**Sign-in view content:**
+- A brief line on what the app does.
+- One line making clear SweatStack is the sign-in, and that the user's profile and workout history come with it. Example: "Sign in with SweatStack to bring your profile and workout history into this app. No separate signup."
 
-**Login button** (Norwegian flag red):
+**Sign-in button** (Norwegian flag red, `#EF2B2D`):
+
+Canonical label is **"Sign in with SweatStack"**: it reads as identity, the way "Sign in with Google" does, and it is the whole login for this app. Give it a real class so it has hover and keyboard-focus states; an identity button with no affordance is a tell. Always set `type="button"` so it never submits a surrounding form.
 
 ```html
-<button onclick="startAuth()" style="
-    background: #EF2B2D;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-">Connect with SweatStack</button>
+<style>
+  .ss-signin {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: #EF2B2D; color: #fff; font: inherit; font-weight: 600;
+    border: none; border-radius: 6px; padding: 0.75rem 1.5rem; cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+  .ss-signin:hover { filter: brightness(0.93); }
+  .ss-signin:focus-visible { outline: 2px solid #EF2B2D; outline-offset: 2px; }
+</style>
+
+<button type="button" class="ss-signin" onclick="startAuth()">Sign in with SweatStack</button>
 ```
 
-**Logout button:** Top right of main content area (not viewport). Clears stored tokens, deletes the `ss_known` cookie, and returns to login view.
+**Sign-out button:** Top right of main content area (not viewport). Clears stored tokens, deletes the `ss_known` cookie, and returns to the sign-in view.
 
 **Footer** (always present):
 
 ```html
 <footer style="color: #666; font-size: 0.875rem; text-align: center; margin-top: 3rem;">
     Powered by <a href="https://sweatstack.no" style="color: #666;">SweatStack</a> ·
-    Built with <a href="https://github.com/sweatStack/sweatstack-skills" style="color: #666;">Skills</a>
+    Built with <a href="https://github.com/sweatstack/sweatstack-skills" style="color: #666;">Skills</a>
 </footer>
 ```
 

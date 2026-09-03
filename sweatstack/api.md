@@ -35,7 +35,9 @@ Never guess field names or enum values. The spec is the source of truth.
 
 **`summary`**: Object with per-metric aggregates — `power.mean`, `power.max`, `heart_rate.mean`, `heart_rate.max`, `distance.sum`, `altitude.gain`, etc. All fields optional.
 
-**Nullable fields:** `name`, `description`, `duration`, `summary` can be null. Always null-check before display.
+**`laps`**: Array on every list and detail response, populated when the source recording contained lap markers. Each lap has `start`, `end`, `duration`, and the same per-metric `summary.*` fields as the activity. No detail call is needed to read lap markers. They ship with the list response.
+
+**Nullable fields:** `name`, `description`, `duration`, `summary`, `laps` can be null. Always null-check before display.
 
 **Date parameters:** Use `YYYY-MM-DD` format. Most endpoints reject timestamps.
 
@@ -59,6 +61,18 @@ Never guess field names or enum values. The spec is the source of truth.
 | `/api/v1/oauth/userinfo` | GET | Current user info |
 
 **Critical**: Never guess request paramaters or body schemas. Use the openapi.json when not sure.
+
+### Pagination on `/activities/`
+
+`GET /api/v1/activities/` accepts `limit` (default 50, no hard cap), `offset` (default 0), and repeatable `sport` filters. Filter server-side instead of pulling 50 mixed activities and dropping ones you don't want client-side.
+
+```
+GET /api/v1/activities/?sport=cycling&sport=running.road&start=2026-04-20&limit=200&offset=0
+```
+
+Paginate by incrementing `offset` until the response is shorter than `limit`. For modest backfills (a few hundred activities), just raising `limit` to 500 in one request is also fine.
+
+**Watermark pitfall:** if you're incrementally syncing into your own database, do not advance your "last synced" timestamp past activities you didn't fetch. Set the watermark to the `start` of the latest activity you *successfully processed*, not `Date.now()` at the moment the poll finished. Otherwise you'll permanently skip the tail of a paginated window on first install.
 
 ## Choosing the Right Endpoint
 
@@ -159,6 +173,13 @@ function isValidGPS(lat, lon) {
 Catches NaN (from null values), Null Island (0, 0), and garbage floats.
 
 ## Sports
+
+SweatStack normalizes every source-device sport into its own taxonomy (the hierarchy at `/api/v1/profile/sports/`). Sports SweatStack doesn't model directly (soccer, basketball, American football, climbing, and so on) arrive as `sport: "unknown"` or `sport: "generic"`. The source device's raw label string is **not preserved**.
+
+Consequences:
+
+- To detect a run regardless of subtype (road, trail, track, treadmill), check `sport.startsWith("running")`. Same pattern for cycling, swimming, etc.
+- A team-sport / field-sport activity will not surface as `sport: "soccer"`. Treat `sport === "unknown"` or `sport === "generic"` as "not a sport SweatStack models". Useful for example when deciding whether to apply GPS smoothing assumptions.
 
 **Formatting sport values for display:**
 
