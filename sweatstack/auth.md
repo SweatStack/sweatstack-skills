@@ -144,8 +144,8 @@ Treat `401` as "refresh and retry once", not "send the user back through OAuth".
 
 ## Redirect URIs
 
-Registered redirect URIs accept both `http://` and `https://` schemes (validated as `AnyHttpUrl`). Pattern matching is prefix/suburl based.
+Registered redirect URIs follow RFC 8252: `https://`, plain `http://` only for loopback hosts (`localhost`, `127.0.0.1`, `::1`), and custom schemes. `http(s)` URIs match by prefix (a registered URI also allows its sub-paths) and, when registered without a port, any port. Custom schemes must match exactly.
 
 - **HTTPS redirect URIs work directly** for native apps using iOS [Universal Links](https://developer.apple.com/ios/universal-links/) or Android [App Links](https://developer.android.com/training/app-links). No custom URL scheme is required, and **no relay or proxy is needed** to bounce a callback into the app.
 - **Custom URL schemes** like `com.example.myapp://oauth/callback` also work. Simpler to set up; fine for v1.
-- **`localhost`** is allowed even when no redirect URIs are configured on the application, to ease local development.
+- **Loopback hosts** (`localhost`, `127.0.0.1`, `::1`) are allowed on any port while no redirect URIs are configured, to ease local development. Once any redirect URI is set, only registered URIs work, so add `http://localhost` explicitly if local development should keep working.

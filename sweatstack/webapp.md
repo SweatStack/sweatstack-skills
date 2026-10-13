@@ -35,13 +35,15 @@ UI can be minimal - focus on functionality. Auth and API error handling must be 
 
 Requires a **Client ID** from a SweatStack application.
 
+**If `sweatstack.toml` exists:** Use its `client_id`, skip app creation.
+
 **If user provides a client_id:** Use it directly, skip app creation.
 
 **Otherwise, create an app with the SweatStack CLI:**
 1. Derive app name from the task (e.g., "heart rate analyzer" → "Heart Rate Analyzer")
 2. Generate page slug from app name: lowercase, spaces to hyphens (e.g., "heart-rate-analyzer")
-3. Create the app with the sweatstack cli
-4. If slug is rejected, prompt user for alternative
+3. Create the app and its page: `sweatstack app create "Heart Rate Analyzer" --page heart-rate-analyzer`. This registers the sign-in redirects and writes the `client_id` to `sweatstack.toml`.
+4. If the slug is rejected (exit code `3`), prompt user for alternative
 
 Prompt user for app name only if it cannot be reasonably inferred from the task.
 
@@ -152,11 +154,11 @@ Canonical label is **"Sign in with SweatStack"**: it reads as identity, the way 
 
 ## After Generation
 
-**Preview locally:** Suggest user start a local file server in the `public/` directory.
+**Preview locally:** `sweatstack page serve`. It keeps running, so start it in the background or suggest the user run it. Open the printed `http://localhost:<port>` URL; `127.0.0.1` won't match the redirect URI.
 
 **Next steps to mention:**
-- **Deploy to the web:** `sweatstack page deploy <slug> ./public`
-- **Make available to other users:** Add privacy policy and app description at `https://app.sweatstack.no/applications/{APP_ID}`
+- **Deploy to the web:** `sweatstack page deploy`
+- **Make available to other users:** The app starts private. `deploy` prints a link to make it public: `https://app.sweatstack.no/applications/{APP_ID}/publish`
 
 ## Reference Apps
 

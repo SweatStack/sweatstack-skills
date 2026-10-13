@@ -1,6 +1,17 @@
 # SweatStack CLI
 
-Command-line tool for authentication, app management, and static deployments.
+Command-line tool for authentication, app management, and hosting static sites on SweatStack Pages.
+
+## Contents
+
+- [Installation](#installation)
+- [Running Non-Interactively](#running-non-interactively)
+- [Authentication](#authentication)
+- [Project Configuration](#project-configuration)
+- [Create an Application](#create-an-application)
+- [Preview Locally](#preview-locally)
+- [Deploy](#deploy)
+- [Going Live](#going-live)
 
 ## Installation
 
@@ -14,21 +25,32 @@ curl -LsSf sweatstack.no/install-cli | sh
 powershell -ExecutionPolicy ByPass -c "irm sweatstack.no/install-cli-windows | iex"
 ```
 
-Verify with `sweatstack --version`. Alternative: `uv pip install sweatstack-cli`
+Verify with `sweatstack --version`. Alternative: `uv tool install sweatstack-cli`
+
+## Running Non-Interactively
+
+Commands run without a terminal never prompt: missing input is an error instead. Pass every value as an argument or flag.
+
+| Exit code | Meaning |
+|-----------|---------|
+| `0` | Success |
+| `1` | Invalid input or local problem (missing argument, existing file, missing directory) |
+| `2` | Not authenticated |
+| `3` | API error (e.g. page name rejected) |
 
 ## Authentication
 
 ```bash
-sweatstack login     # Opens browser for OAuth2, stores credentials locally
+sweatstack status    # Auth status, user, and whether a CLI update is available
+sweatstack login     # Opens the browser to sign in, then stores credentials
 sweatstack logout    # Remove stored credentials
-sweatstack status    # Show authentication and version status
 ```
 
-Always `sweatstack status` to check if the user is authenticated.
+Run `sweatstack status` first. If not authenticated, ask the user to run `sweatstack login`: it needs them to sign in in their browser. If `status` reports an update, run the upgrade command it prints.
 
 ## Project Configuration
 
-The CLI uses `sweatstack.toml` to store project configuration. Created automatically by `sweatstack app create` or `sweatstack app link`.
+`sweatstack.toml` links a directory to an application and its page. Every `page` command reads its defaults from it.
 
 ```toml
 [app]
@@ -36,73 +58,65 @@ name = "My App"
 client_id = "abc123"
 
 [page]
-slug = "my-page"
-directory = "dist"
+slug = "my-app"
+directory = "public"
 ```
 
-When present, commands like `sweatstack page deploy` read defaults from this file — no arguments needed.
+`app create`, `app link` and `page init` write this file. When the user provides a `client_id`, write it yourself with the format above.
 
-## Create Applications
+## Create an Application
 
 ```bash
-sweatstack app create "My App"
+sweatstack app create "My App" --page my-app
 ```
 
-**Options:**
+Creates a private application and its page at `https://my-app.pages.sweatstack.dev`, and writes `sweatstack.toml` with `directory = "public"`. The client ID is printed and recorded in `sweatstack.toml`.
 
 | Flag | Purpose |
 |------|---------|
-| `--description` / `-d` | App description |
-| `--page myapp` | Associate with a SweatStack Page (auto-configures redirect URI) |
-| `--secret` | Generate client secret for confidential clients |
-| `--env` | Write credentials to `.env` file |
-| `--env-file PATH` | Write credentials to specific file |
-| `--json` | Output as JSON for scripting |
+| `--page`, `-p SLUG` | Create the app's page too, and register its sign-in redirects |
+| `--description`, `-d TEXT` | App description (max 500 characters) |
+| `--secret`, `-s` | Generate a client secret (server-side apps only; browser apps use PKCE) |
+| `--env` / `--env-file PATH` | Write the credentials to `.env` or a given file |
+| `--json` | Print the created app as JSON |
 
-**Minimal:**
-```bash
-sweatstack app create "My App" -d "Heart rate zone calculator"
-```
+- **Always pass `--page`** for an app that will be hosted on Pages. It registers both `https://<slug>.pages.sweatstack.dev` and `http://localhost` (any port) as redirect URIs, so sign-in works live and in local previews.
+- **Page names (slugs):** 3–63 lowercase letters, numbers, and hyphens, without "sweatstack". Names can also be taken or reserved. A rejected name exits with code `3` and creates nothing: choose another name and retry.
+- **Check for `sweatstack.toml` first.** If it exists, the directory is already linked: use its `client_id` instead of creating an app. `app create` refuses to overwrite it.
 
-**Full example:**
-```bash
-sweatstack app create "My App" -d "Heart rate zone calculator" --page my-app --secret --env-file .env.local
-```
-
-Creates a private application. Page slugs can be rejected if unavailable.
-
-### Publishing
-
-Apps start as private: Only the developer can use it. After `sweatstack page deploy`, the CLI prints a publish URL if the app is still private: `https://app.sweatstack.no/applications/{app_id}/publish`. Surface this URL to the user when they're ready to go live.
-
-### Link Existing Application
+### Scaffold a Starter App
 
 ```bash
-sweatstack app link
+sweatstack page init "My App"
 ```
 
-Prompts to select from existing applications and creates `sweatstack.toml` in the current directory.
+Like `app create --page`, but also writes `public/index.html`: a working starter app that signs in and plots the user's latest activity. Use it when the user wants a starting point rather than a custom-built app. Options: `--slug`, `--dir`, `--title`, `--client-id` (reuse an existing app), `--force` (overwrite `index.html`).
 
-## Deploy Static Sites
+### Link an Existing Application
+
+`sweatstack app link` lists the user's applications and asks which one to link. It only works interactively. Non-interactively, write `sweatstack.toml` yourself.
+
+## Preview Locally
 
 ```bash
-# With sweatstack.toml in the directory
-sweatstack page deploy
-
-# Or specify explicitly
-sweatstack page deploy myapp ./dist
+sweatstack page serve
 ```
 
-Uploads files to `https://myapp.pages.sweatstack.dev`.
+Serves the `[page] directory` on the first free port from 8000 and prints its URL. It keeps running: start it in the background, or ask the user to run it. Open it at `http://localhost:<port>`, not `127.0.0.1`, because the redirect URI must match the hostname.
 
-**Constraints:**
-- Pages must be pre-created via dashboard: https://app.sweatstack.no/settings/api
-- 10MB limit per app
-
-## Help
+## Deploy
 
 ```bash
-sweatstack --help
-sweatstack app --help
-sweatstack app create --help
+sweatstack page deploy                         # Uses sweatstack.toml
+sweatstack page deploy my-app --dir ./public   # Explicit slug and directory
 ```
+
+Uploads the directory to `https://<slug>.pages.sweatstack.dev`. Every deploy replaces all files on the page.
+
+- **Page doesn't exist yet:** with an app linked in `sweatstack.toml`, `deploy` creates its page. Without a linked app, it fails non-interactively: create the app with `app create --page` first.
+- **Sign-in on the live page** needs `https://<slug>.pages.sweatstack.dev` in the app's redirect URIs. Creating the app with its page (`app create --page`, or `page init` without an existing app) registers it. A page added to an existing app doesn't: have the user add it at `https://app.sweatstack.no/applications/{client_id}/edit`, together with `http://localhost`, because setting any redirect URI ends the default localhost access.
+- **Limits:** 10 MB per file; 100 MB and about 1,000 files per deploy.
+
+## Going Live
+
+New apps are private: only the developer can sign in. While the app is private, `deploy` prints a link to make it public: `https://app.sweatstack.no/applications/{client_id}/publish`. Surface it to the user when they're ready for others to use the app.
