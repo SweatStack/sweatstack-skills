@@ -9,7 +9,9 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Base URL:** `https://app.sweatstack.no`
 
-**Default scopes:** `openid profile data:read`
+**Default scopes:** `openid profile activities:read offline_access`. Add a category only when the app uses it.
+
+**Current docs:** https://docs.sweatstack.no/llms.txt lists every page as Markdown. When a guide here disagrees with the live API or docs, trust the live source.
 
 ## Reference
 

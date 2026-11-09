@@ -48,6 +48,8 @@ sweatstack logout    # Remove stored credentials
 
 Run `sweatstack status` first. If not authenticated, ask the user to run `sweatstack login`: it needs them to sign in in their browser. If `status` reports an update, run the upgrade command it prints.
 
+Creating an app or changing its page can also exit `2` with a message that it needs the user's passkey. Ask the user to do what the message says (`sweatstack login` confirms the passkey in their browser), then run the command again.
+
 ## Project Configuration
 
 `sweatstack.toml` links a directory to an application and its page. Every `page` command reads its defaults from it.
@@ -114,9 +116,11 @@ sweatstack page deploy my-app --dir ./public   # Explicit slug and directory
 Uploads the directory to `https://<slug>.pages.sweatstack.dev`. Every deploy replaces all files on the page.
 
 - **Page doesn't exist yet:** with an app linked in `sweatstack.toml`, `deploy` creates its page. Without a linked app, it fails non-interactively: create the app with `app create --page` first.
-- **Sign-in on the live page** needs `https://<slug>.pages.sweatstack.dev` in the app's redirect URIs. Creating the app with its page (`app create --page`, or `page init` without an existing app) registers it. A page added to an existing app doesn't: have the user add it at `https://app.sweatstack.no/applications/{client_id}/edit`, together with `http://localhost`, because setting any redirect URI ends the default localhost access.
+- **Sign-in on the live page** needs `https://<slug>.pages.sweatstack.dev` in the app's redirect URIs. Creating the app with its page (`app create --page`, or `page init` without an existing app) registers it. A page added to an existing app doesn't: have the user add it on the app's OAuth tab, `https://app.sweatstack.no/applications/{client_id}/oauth`, together with `http://localhost`, because setting any redirect URI ends the default localhost access.
 - **Limits:** 10 MB per file; 100 MB and about 1,000 files per deploy.
 
 ## Going Live
 
-New apps are private: only the developer can sign in. While the app is private, `deploy` prints a link to make it public: `https://app.sweatstack.no/applications/{client_id}/publish`. Surface it to the user when they're ready for others to use the app.
+New apps are private: only the developer can sign in. After a deploy, the CLI prints what the app still needs before anyone else can connect (a description, a logo, a purpose for each kind of data it uses, ...) and a link to the app's Consent screen: `https://app.sweatstack.no/applications/{client_id}/consent`. `app create --json` and the deploy response carry the same list as `go_live_missing`. Surface it to the user when they're ready for others to use the app; a browser-only Pages app can take the Pages fast track there.
+
+The list only covers the data ticked on the Consent screen tab, which for a new app is activities. If the app requests another category, have the user tick it there too, or everyone else is refused.
