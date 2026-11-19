@@ -78,6 +78,7 @@ const REDIRECT_URI = location.origin + location.pathname; // Works for localhost
 const SCOPE = 'openid profile activities:read offline_access';
 const AUTH_URL = 'https://app.sweatstack.no/oauth/authorize';
 const TOKEN_URL = 'https://app.sweatstack.no/api/v1/oauth/token';
+const REVOKE_URL = 'https://app.sweatstack.no/api/v1/oauth/revoke';
 const API_BASE = 'https://app.sweatstack.no/api/v1';
 
 // Thrown when the sign-in is gone. Show the sign-in button.
@@ -118,7 +119,7 @@ async function tokenRequest(params) {
     throw new Error(body.error_description || body.error || `token request failed (${response.status})`);
 }
 
-// One tab refreshes at a time, and every refresh can return a new refresh token.
+// One tab refreshes at a time, and every refresh returns a new refresh token.
 // `stale` is the access token the caller can't use: expired, or answered with a 401.
 function refreshTokens(stale) {
     return navigator.locks.request('ss-token-refresh', async () => {
@@ -167,6 +168,15 @@ async function startAuth() {
 }
 
 function signOut() {
+    // End the sign-in on the server too, so its refresh token stops working. Best effort.
+    const tokens = loadTokens();
+    if (tokens?.refresh_token) {
+        fetch(REVOKE_URL, {
+            method: 'POST', keepalive: true,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ client_id: CLIENT_ID, token: tokens.refresh_token }),
+        }).catch(() => {});
+    }
     clearTokens();
     document.cookie = 'ss_known=; path=/; max-age=0';
     showSignIn();
@@ -262,7 +272,7 @@ Canonical label is **"Sign in with SweatStack"**: it reads as identity, the way 
 <button type="button" class="ss-signin" onclick="startAuth()">Sign in with SweatStack</button>
 ```
 
-**Sign-out button:** Top right of main content area (not viewport). Clears stored tokens, deletes the `ss_known` cookie, and returns to the sign-in view.
+**Sign-out button:** Top right of main content area (not viewport). Revokes the refresh token, clears stored tokens, deletes the `ss_known` cookie, and returns to the sign-in view.
 
 **Footer** (always present):
 

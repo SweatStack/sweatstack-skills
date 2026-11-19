@@ -9,6 +9,7 @@
 - [Authorization Code Flow](#authorization-code-flow-private-clients)
 - [Token Response](#token-response)
 - [Refresh Tokens](#refresh-tokens)
+- [Revoke a Refresh Token](#revoke-a-refresh-token)
 - [API Authentication](#api-authentication)
 - [Token Lifecycle](#token-lifecycle)
 - [Redirect URIs](#redirect-uris)
@@ -155,8 +156,22 @@ client_id=CLIENT_ID
 
 For private clients, include `client_secret`. The response has the same shape as the first token response.
 
-- **Keep the `refresh_token` from every response** and send that one next time. It can differ from the one you sent, and then the old one may stop working.
-- **One holder per refresh token.** Only one process or tab refreshes at a time and shares the result. A browser app serializes refreshes across tabs with the Web Locks API.
+- **Keep the `refresh_token` from every response** and send that one next time. Every refresh returns a new one, and the one you sent is used up: SweatStack will refuse it, and then end the sign-in it belongs to.
+- **One holder per refresh token.** Only one process or tab refreshes at a time and shares the result. A browser app serializes refreshes across tabs with the Web Locks API and reads the stored tokens again under the lock. Two refreshes with the same token within 30 seconds get the same new token, so retrying a lost response is safe.
+
+## Revoke a Refresh Token
+
+On sign-out, end the sign-in so its refresh tokens stop working:
+
+```
+POST https://app.sweatstack.no/api/v1/oauth/revoke
+Content-Type: application/x-www-form-urlencoded
+
+token=REFRESH_TOKEN&
+client_id=CLIENT_ID
+```
+
+For private clients, include `client_secret`. The answer is `200` with an empty body, also for a token SweatStack doesn't know. An access token can't be revoked (`400 unsupported_token_type`); it expires after 15 minutes.
 
 ## API Authentication
 
@@ -169,7 +184,7 @@ Authorization: Bearer ACCESS_TOKEN
 ## Token Lifecycle
 
 - **Access token**: JWT, RS256, 15-minute TTL. Carries the standard `exp` claim. Decode it locally to know when to refresh; no network call needed. The token response also includes `expires_in` (seconds) for clients that prefer not to parse the JWT.
-- **Refresh token**: valid until the user revokes the app's permissions, or until 365 days pass unused. Each use restarts the year, so apps used sporadically (a user opens once a month) refresh without re-auth.
+- **Refresh token**: good for one refresh, which returns the next one. Valid until the user revokes the app's permissions, the app revokes it, or 365 days pass unused. Each refresh starts a new year, so apps used sporadically (a user opens once a month) refresh without re-auth.
 
 Treat `401` as "refresh and retry once", not "send the user back through OAuth". Send the user through authorization again only when the refresh is refused with `invalid_grant`.
 
