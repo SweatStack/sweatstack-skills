@@ -154,9 +154,9 @@ refresh_token=REFRESH_TOKEN&
 client_id=CLIENT_ID
 ```
 
-For private clients, include `client_secret`. The response has the same shape as the first token response.
+For private clients, include `client_secret` on every refresh. An app registered on or after 19 November 2026 gets `401` `invalid_client` without it, or with a wrong one. The response has the same shape as the first token response.
 
-- **Keep the `refresh_token` from every response** and send that one next time. Every refresh returns a new one, and the one you sent is used up: SweatStack will refuse it, and then end the sign-in it belongs to.
+- **Keep the `refresh_token` from every response** and send that one next time. Every refresh returns a new one, and the one you sent is used up. For an app registered on or after 19 November 2026, sending a used one gets `400` `invalid_grant` and ends the sign-in it belongs to, so the user must authorize again; older apps get the same from a later release.
 - **One holder per refresh token.** Only one process or tab refreshes at a time and shares the result. A browser app serializes refreshes across tabs with the Web Locks API and reads the stored tokens again under the lock. Two refreshes with the same token within 30 seconds get the same new token, so retrying a lost response is safe.
 
 ## Revoke a Refresh Token

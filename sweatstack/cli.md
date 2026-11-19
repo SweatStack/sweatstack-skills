@@ -43,7 +43,7 @@ Commands run without a terminal never prompt: missing input is an error instead.
 ```bash
 sweatstack status    # Auth status, user, and whether a CLI update is available
 sweatstack login     # Opens the browser to sign in, then stores credentials
-sweatstack logout    # Remove stored credentials
+sweatstack logout    # End the sign-in and remove stored credentials
 ```
 
 Run `sweatstack status` first. If not authenticated, ask the user to run `sweatstack login`: it needs them to sign in in their browser. If `status` reports an update, run the upgrade command it prints.
