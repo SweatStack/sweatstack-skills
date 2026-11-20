@@ -107,20 +107,33 @@ Data endpoints return **Parquet files (ZSTD-compressed)**, although the OpenAPI 
 
 ### DuckDB-WASM Setup (browser)
 
-```javascript
-import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.32.0/+esm';
+Ship DuckDB-WASM in the app's own `vendor/` folder. This works everywhere, and SweatStack Tools blocks loading it from a CDN. Four files, for version 1.32.0:
 
-const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
-const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
-const worker_url = URL.createObjectURL(
-    new Blob([`importScripts("${bundle.mainWorker}");`], { type: 'text/javascript' })
-);
-const worker = new Worker(worker_url);
-const logger = new duckdb.ConsoleLogger();
-const db = new duckdb.AsyncDuckDB(logger, worker);
-await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-URL.revokeObjectURL(worker_url);
+```bash
+npm install @duckdb/duckdb-wasm@1.32.0
+# The browser module imports apache-arrow by name: bundle it once.
+npx esbuild node_modules/@duckdb/duckdb-wasm/dist/duckdb-browser.mjs --bundle --format=esm --outfile=public/vendor/duckdb.mjs
+cp node_modules/@duckdb/duckdb-wasm/dist/{duckdb-eh.wasm,duckdb-browser-eh.worker.js} public/vendor/
+# Parquet support is an extension. Without it, DuckDB fetches it from extensions.duckdb.org on the
+# first Parquet query; SweatStack Tools blocks that and the query fails with NetworkError.
+mkdir -p public/vendor/duckdb-extensions/v1.4.3/wasm_eh
+curl -L -o public/vendor/duckdb-extensions/v1.4.3/wasm_eh/parquet.duckdb_extension.wasm \
+  https://extensions.duckdb.org/v1.4.3/wasm_eh/parquet.duckdb_extension.wasm
 ```
+
+```javascript
+import * as duckdb from './vendor/duckdb.mjs';
+
+// Absolute URLs: DuckDB's worker resolves relative ones against its own address.
+const vendor = new URL('/vendor/', location.origin).href;
+const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), new Worker(vendor + 'duckdb-browser-eh.worker.js'));
+await db.instantiate(vendor + 'duckdb-eh.wasm');
+const setup = await db.connect();
+await setup.query(`SET custom_extension_repository = '${vendor}duckdb-extensions'`);
+await setup.close();
+```
+
+`v1.4.3` is DuckDB's own version inside DuckDB-WASM 1.32.0. Keep the folder layout exactly.
 
 ### Parsing Parquet
 

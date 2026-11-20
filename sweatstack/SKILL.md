@@ -17,6 +17,8 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Webapps:** Single-file HTML apps with vanilla JS. See [webapp.md](webapp.md)
 
+**SweatStack Tools:** Tools at `{slug}.sweatstack.tools` that run entirely in the browser under a network lock: what a tool can reach, shipping dependencies, maps, and checking with `sweatstack tool serve` and `tool check`. Read before building or fixing a tool. See [tools.md](tools.md)
+
 **CLI:** App management and deployment. See [cli.md](cli.md)
 
 **Auth:** OAuth2/PKCE authentication. See [auth.md](auth.md)

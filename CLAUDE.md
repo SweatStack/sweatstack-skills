@@ -10,6 +10,7 @@ sweatstack/
 ├── webapp.md   # Single-file HTML patterns, styling, branding, deployment
 ├── auth.md     # OAuth2/PKCE flows, tokens, redirect URIs
 ├── cli.md      # SweatStack CLI: app management and deployment
+├── tools.md    # SweatStack Tools: the network policy, dependencies, maps, tool serve/check
 └── api.md      # Endpoints, data formats, Parquet handling
 ```
 

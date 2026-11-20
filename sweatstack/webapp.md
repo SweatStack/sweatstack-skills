@@ -18,7 +18,7 @@
 
 - Single HTML file with inline `<style>` and `<script>`
 - Vanilla JS only (no React, no build step)
-- CDN dependencies when needed (e.g., html2canvas for sharing)
+- Libraries downloaded into `vendor/` and loaded by relative path (e.g., html2canvas for sharing). Never from a CDN: SweatStack Tools blocks other sites
 - localStorage for tokens and user preferences
 - DuckDB-WASM for Parquet parsing (supports full SQL for analytics)
 
