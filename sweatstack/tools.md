@@ -5,6 +5,7 @@ Tools at `https://{slug}.sweatstack.tools` run entirely in the browser. One netw
 ## Contents
 
 - [What a Tool Can Reach](#what-a-tool-can-reach)
+- [Sign-in](#sign-in)
 - [Rules](#rules)
 - [Check Before Deploying](#check-before-deploying)
 - [Fix a Blocked Load](#fix-a-blocked-load)
@@ -25,12 +26,78 @@ Tools at `https://{slug}.sweatstack.tools` run entirely in the browser. One netw
 
 A `<script>`, stylesheet, image or font from the API or Maps is blocked too. Only the tool's own files load.
 
+## Sign-in
+
+**SweatStack Tools signs people in, not the tool. Never write OAuth code in a tool:** no `/oauth/authorize`, no PKCE, no client ID, no tokens in `localStorage`. Before a page of a tool that uses SweatStack data is served, SweatStack signs the person in. The tool reads the access token from a cookie and calls the API with it.
+
+Copy this file into the tool as `vendor/sweatstack.js`, unchanged, and call the API only through `sweatstack(path, init)`. `sweatstack tool create` adds it:
+
+```javascript
+const COOKIE = /(?:^|; )__Host-sweatstack_access_token=([^;]*)/;
+// Each Tools app pairs with one SweatStack app: staging tools with staging, the rest with production.
+const API = location.hostname.endsWith(".sweatstack-tools-staging.dev")
+  ? "https://staging.sweatstack.no"
+  : "https://app.sweatstack.no";
+let pending = null;
+
+function cookieToken() {
+  const match = document.cookie.match(COOKIE);
+  return match ? match[1] : null;
+}
+
+function signIn() {
+  const back = location.pathname + location.search;
+  location.assign(`/_sweatstack/sign-in?return=${encodeURIComponent(back)}`);
+}
+
+function freshToken() {
+  pending ??= fetch("/_sweatstack/token", { method: "POST" })
+    .then(async (response) => {
+      if (response.status === 401) {
+        signIn();
+        return new Promise(() => {}); // The page is going away.
+      }
+      if (!response.ok) throw new Error(`SweatStack sign-in failed: ${response.status}`);
+      return (await response.json()).access_token;
+    })
+    .finally(() => { pending = null; });
+  return pending;
+}
+
+export async function sweatstack(path, init = {}) {
+  for (const retry of [false, true]) {
+    const token = (!retry && cookieToken()) || (await freshToken());
+    const headers = new Headers(init.headers);
+    headers.set("Authorization", `Bearer ${token}`);
+    const response = await fetch(`${API}${path}`, { ...init, headers });
+    if (response.status !== 401 || retry) return response;
+  }
+}
+
+export async function signOut() {
+  await fetch("/_sweatstack/sign-out", { method: "POST" });
+}
+```
+
+```javascript
+import { sweatstack, signOut } from './vendor/sweatstack.js';
+
+const response = await sweatstack('/api/v1/activities/latest');
+const activity = await response.json();
+```
+
+- `sweatstack()` returns the `Response`. Check `response.ok` as with `fetch`.
+- A request body must be a string, `Blob`, `FormData`, `ArrayBuffer` or `URLSearchParams`, never a stream: a request can be sent twice.
+- **In a web worker,** there is no `document.cookie`: `POST /_sweatstack/token` returns `{access_token, expires_in}`. On `401`, post a message to the page, and the page navigates to `/_sweatstack/sign-in?return=` and its path.
+- **Sign-out:** `await signOut()`, then show the tool's own signed-out state with a link to `/_sweatstack/sign-in?return=%2F`. Don't reload: a reload signs in again.
+- There is no signed-out landing page. A tool that uses no SweatStack data declares no data scopes, and nobody signs in.
+
 ## Rules
 
 - **Ship every dependency in the tool.** Download each library into `vendor/` with the version in the file name (`vendor/uPlot.iife.min-1.6.31.js`) and load it by relative path. Keep licence files.
 - **Bundle an ES module that imports packages by name** (`import ... from "apache-arrow"`): `npx esbuild <entry> --bundle --format=esm --outfile=vendor/<name>.mjs`.
 - **DuckDB-WASM needs four files and one setting, including the Parquet extension.** Use the DuckDB-WASM setup in the API guide exactly. Without the extension, the first Parquet query fails with `NetworkError`.
-- **Sign in with a redirect, never a popup.** A tool has no link to the window that opened it.
+- **Never write OAuth code.** Use `vendor/sweatstack.js` ([Sign-in](#sign-in)).
 - **Don't use WebRTC.** `RTCPeerConnection` throws `NotSupportedError`.
 - **Don't use speculation rules, `<link rel="preconnect">` or `<link rel="dns-prefetch">`.** SweatStack removes them.
 - **Reach software on the person's computer only from a click,** not on page load: the browser asks first. Tell Safari users it won't work there.
@@ -41,10 +108,10 @@ A `<script>`, stylesheet, image or font from the API or Maps is blocked too. Onl
 
 ```bash
 sweatstack tool check public/   # Lists every load from another site. Exit code 1 means fix them
-sweatstack tool serve public/   # Serves locally under the production policy
+sweatstack tool serve           # Serves locally under the production policy, and signs in
 ```
 
-Treat a non-zero exit from `tool check` as a failure to fix, not a warning. Then open the address `tool serve` prints and read the browser console: it shows what `tool check` can't see, URLs a library builds while it runs. Fix every Content Security Policy error before deploying. Both commands need SweatStack CLI 0.16.0 or later.
+`tool serve` reads `sweatstack.toml` (the tool's slug, folder and scopes) and signs in as SweatStack Tools does, at `http://{slug}.localhost:{port}`. Use Chrome or Firefox for it: Safari keeps no sign-in cookie on plain `http://`. Treat a non-zero exit from `tool check` as a failure to fix, not a warning. Then open the address `tool serve` prints and read the browser console: it shows what `tool check` can't see, URLs a library builds while it runs. Fix every Content Security Policy error before deploying. Both commands need SweatStack CLI 0.16.0 or later.
 
 ## Fix a Blocked Load
 
@@ -100,5 +167,6 @@ Download the wheel of every package the code loads into `vendor/pyodide/`. `pyfe
 
 - Every HTML page gets a WebRTC block first in `<head>` and a small "Report" link. Leave room in a corner of the page.
 - `_headers`, `_redirects` and `.htaccess` are served as plain files: a tool can't set headers.
+- Paths starting with `_sweatstack` and `_gate` belong to SweatStack. A tool can't use them.
 - A tool's files work only on its own address. Other sites can't embed them.
 - Limits: 50 MB per file, 99 MB and 20,000 files per tool.

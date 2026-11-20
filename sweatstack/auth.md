@@ -1,5 +1,7 @@
 # OAuth2/OpenID Authentication
 
+**Building a tool for SweatStack Tools (`{slug}.sweatstack.tools`)? Don't use anything on this page.** SweatStack Tools signs people in for the tool: see [tools.md](tools.md#sign-in).
+
 ## Contents
 
 - [Endpoints](#endpoints)
