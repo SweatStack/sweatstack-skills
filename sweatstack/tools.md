@@ -4,6 +4,7 @@ Tools at `https://{slug}.sweatstack.tools` run entirely in the browser. One netw
 
 ## Contents
 
+- [Create and Deploy](#create-and-deploy)
 - [What a Tool Can Reach](#what-a-tool-can-reach)
 - [Sign-in](#sign-in)
 - [Rules](#rules)
@@ -12,6 +13,26 @@ Tools at `https://{slug}.sweatstack.tools` run entirely in the browser. One netw
 - [Maps](#maps)
 - [Pyodide](#pyodide)
 - [What Changes on the Server](#what-changes-on-the-server)
+
+## Create and Deploy
+
+```bash
+sweatstack tool create --name power-duration --title "Power duration" \
+  --description "Your best efforts over time." --scope activities:read
+sweatstack tool serve        # Try it locally, signed in
+sweatstack tool check public/
+sweatstack tool deploy
+```
+
+- **`tool create`** creates a private tool at `https://{name}-{handle}.sweatstack.tools`, writes `sweatstack.toml`, and puts the template in `public/`: one page that signs in, loads the latest activity's Parquet with DuckDB-WASM and plots it. Build on the template rather than starting over.
+- **Ask the person** for the name (lowercase words joined by hyphens), the title, and the data the tool needs, one `--scope` each (`activities:read` by default). The name can never change.
+- **On their first tool,** pass their handle and public name with `--handle` and `--public-name`. The handle is in every tool's address and can never change, so always ask the person for it; never invent one.
+- **`tool deploy`** checks the folder, uploads only changed files, and makes them live. Read the warnings it prints. A new tool is private: only its owner can open it.
+- **`tool deploys`** lists the kept deploys; **`tool rollback [ID]`** serves one again.
+- **Never run `tool publish`** unless the person asks: it opens the tool to everyone.
+- **"This needs your passkey":** ask the person to run `sweatstack login`, then run the command again.
+
+These commands need SweatStack CLI 0.17.0 or later.
 
 ## What a Tool Can Reach
 
@@ -111,7 +132,7 @@ sweatstack tool check public/   # Lists every load from another site. Exit code 
 sweatstack tool serve           # Serves locally under the production policy, and signs in
 ```
 
-`tool serve` reads `sweatstack.toml` (the tool's slug, folder and scopes) and signs in as SweatStack Tools does, at `http://{slug}.localhost:{port}`. Use Chrome or Firefox for it: Safari keeps no sign-in cookie on plain `http://`. Treat a non-zero exit from `tool check` as a failure to fix, not a warning. Then open the address `tool serve` prints and read the browser console: it shows what `tool check` can't see, URLs a library builds while it runs. Fix every Content Security Policy error before deploying. Both commands need SweatStack CLI 0.16.0 or later.
+`tool serve` reads `sweatstack.toml` (the tool's slug, folder and scopes) and signs in as SweatStack Tools does, at `http://{slug}.localhost:{port}`. Use Chrome or Firefox for it: Safari keeps no sign-in cookie on plain `http://`. Treat a non-zero exit from `tool check` as a failure to fix, not a warning. Then open the address `tool serve` prints and read the browser console: it shows what `tool check` can't see, URLs a library builds while it runs. Fix every Content Security Policy error before deploying.
 
 ## Fix a Blocked Load
 

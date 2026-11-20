@@ -2,6 +2,8 @@
 
 Command-line tool for authentication, app management, and hosting static sites on SweatStack Pages.
 
+For a tool on SweatStack Tools (`sweatstack tool create`, `serve`, `check`, `deploy`), see [tools.md](tools.md).
+
 ## Contents
 
 - [Installation](#installation)
