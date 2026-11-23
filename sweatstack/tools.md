@@ -27,6 +27,8 @@ sweatstack tool deploy
 - **`tool create`** creates a private tool at `https://{name}-{handle}.sweatstack.tools`, writes `sweatstack.toml`, and puts the template in `public/`: one page that signs in, loads the latest activity's Parquet with DuckDB-WASM and plots it. Build on the template rather than starting over.
 - **Ask the person** for the name (lowercase words joined by hyphens), the title, and the data the tool needs, one `--scope` each (`activities:read` by default). The name can never change. Every tool also gets `openid`, `profile` and `offline_access`, so `/api/v1/oauth/userinfo` works without asking for them.
 - **On their first tool,** pass their handle and public name with `--handle` and `--public-name`. Without them, `tool create` stops with `--handle is required` when the person has no handle yet, and uses the existing one otherwise. The handle is in every tool's address and can never change, so always ask the person for it; never invent one.
+- **`--force`** writes the template over the folder's files, `index.html` included. To create the tool for a folder you already built, move it aside, run `tool create`, then copy your files back.
+- **`sweatstack.toml`** holds the tool's slug, folder and scopes, and an `[app]` table with the tool's own client ID, which SweatStack Tools and `tool serve` use to sign in. The page never needs it.
 - **`tool deploy`** checks the folder, uploads only changed files, and makes them live. Read the warnings it prints. A new tool is private: only its owner can open it.
 - **`tool deploys`** lists the kept deploys; **`tool rollback [ID]`** serves one again.
 - **Never run `tool publish`** unless the person asks: it opens the tool to everyone.

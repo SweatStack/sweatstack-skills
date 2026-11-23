@@ -186,7 +186,7 @@ Name the columns in the query and cast metrics to `DOUBLE`, so every value reach
 `GET /api/v1/activities/longitudinal-mean-max` returns the best value of one metric for each duration, over every matching activity: a power-duration curve in one request.
 
 - **`metric`** (required): one metric, such as `power` or `speed`.
-- **`sport`** (required, although the OpenAPI spec lists it as optional): repeat it for several, such as `sport=cycling&sport=running`. A sport includes its sub-sports: `cycling` matches `cycling.road` and `cycling+stationary`. Leaving it out is a `422`.
+- **`sport`** (required, although the OpenAPI spec lists it as optional): repeat it for several, such as `sport=cycling&sport=running`. A sport includes its sub-sports: `cycling` matches `cycling.road` and `cycling+stationary`. Leaving it out is a `422`, and there is no value for every sport. A power curve is usually per sport family, such as `cycling`: running and cycling power on one curve rarely mean much.
 - **`start`**, **`end`**: `YYYY-MM-DD`. `end` defaults to today.
 - **`durations`**: seconds, comma-separated (`5,60,300,1200`), or `all` for the full grid. Omit it for the default 19 durations.
 
