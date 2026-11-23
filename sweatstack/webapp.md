@@ -1,5 +1,7 @@
 # Building Single-File Web Apps
 
+**Building a tool for SweatStack Tools (`{slug}.sweatstack.tools`)? Its sign-in, tokens and dependencies work differently: follow [tools.md](tools.md), and use this page only for [Quality Bar](#quality-bar), [Default Styling](#default-styling) and [SweatStack Branding](#sweatstack-branding).**
+
 ## Contents
 
 - [Tech Stack](#tech-stack)

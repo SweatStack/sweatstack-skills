@@ -7,6 +7,7 @@
 - [Choosing the Right Endpoint](#choosing-the-right-endpoint)
 - [Data Fetching Patterns](#data-fetching-patterns)
 - [Parquet Responses](#parquet-responses)
+- [Mean-Max Across Activities](#mean-max-across-activities)
 - [Attribution](#attribution)
 - [Metrics Parameter](#metrics-parameter)
 - [Available Metrics](#available-metrics)
@@ -64,7 +65,7 @@ Never guess field names or enum values. The spec is the source of truth.
 | `/api/v1/profile/tags/` | GET | `activities:read` | User-defined tags |
 | `/api/v1/profile/sports/` | GET | `activities:read` | Available sports hierarchy |
 | `/api/v1/activities/longitudinal-data` | GET | `activities:read` | Timeseries data across activities. Allows extensive filtering on sports and metrics. (returns Parquet) |
-| `/api/v1/activities/longitudinal-mean-max` | GET | `activities:read` | Historical mean-max (returns Parquet) |
+| `/api/v1/activities/longitudinal-mean-max` | GET | `activities:read` | Best effort per duration across activities, such as a power-duration curve (returns Parquet). See [Mean-Max Across Activities](#mean-max-across-activities) |
 | `/api/v1/dailies/{measure}` | GET | `wellness:read` | Daily measures. `menstrual_cycle_day` needs `reproductive_health:read`. |
 | `/api/v1/oauth/userinfo` | GET | `openid` | Current user info. Name needs `profile`, email needs `email`. |
 
@@ -163,7 +164,7 @@ async function queryParquet(arrayBuffer, sql) {
     }
 }
 
-// Usage
+// Usage. In a SweatStack Tool, call sweatstack(path) instead of fetch: see tools.md
 const response = await fetch(`${API_BASE}/activities/${id}/data?metrics=altitude&metrics=distance`, {
     headers: { 'Authorization': `Bearer ${token}` }
 });
@@ -180,6 +181,32 @@ Name the columns in the query and cast metrics to `DOUBLE`, so every value reach
 
 **Note:** DuckDB-WASM is ~10MB.
 
+## Mean-Max Across Activities
+
+`GET /api/v1/activities/longitudinal-mean-max` returns the best value of one metric for each duration, over every matching activity: a power-duration curve in one request.
+
+- **`metric`** (required): one metric, such as `power` or `speed`.
+- **`sport`** (required, although the OpenAPI spec lists it as optional): repeat it for several, such as `sport=cycling&sport=running`. A sport includes its sub-sports: `cycling` matches `cycling.road` and `cycling+stationary`. Leaving it out is a `422`.
+- **`start`**, **`end`**: `YYYY-MM-DD`. `end` defaults to today.
+- **`durations`**: seconds, comma-separated (`5,60,300,1200`), or `all` for the full grid. Omit it for the default 19 durations.
+
+One row per duration, ordered by duration:
+
+| Column | Type | |
+|---|---|---|
+| `duration` | whole seconds | DuckDB reads it as a `BIGINT`; pyarrow and pandas as a duration |
+| the metric, such as `power` | float | The best mean over that duration |
+| `start` | timestamp, UTC | When that best effort started |
+| `activity_id`, `sport` | string | The activity it came from |
+
+No matching data is a `200` with zero rows and no `SweatStack-Attribution` header, not an error: show an empty state.
+
+```sql
+SELECT CAST(duration AS DOUBLE) AS seconds, CAST(power AS DOUBLE) AS power,
+       epoch_ms(start) AS start_ms, activity_id, sport
+FROM PARQUET ORDER BY seconds
+```
+
 ## Attribution
 
 Data from a platform such as Garmin must show where it came from, next to the data. SweatStack gives the wording: show it as it is, and never write "Garmin" yourself.
@@ -188,6 +215,7 @@ Data from a platform such as Garmin must show where it came from, next to the da
 - **Parquet data** (`/activities/{id}/data`, `/activities/{id}/mean-max`, `/activities/longitudinal-data`, `/activities/longitudinal-mean-max`): the `SweatStack-Attribution` header, such as `Garmin` or `Data from Garmin and Strava`. Absent when nothing needs showing. Browsers can read it.
 
 ```javascript
+// In a SweatStack Tool, call sweatstack(path) instead of fetch: see tools.md
 const response = await fetch(`${API}/api/v1/activities/${id}/data?metrics=power`, { headers });
 const attribution = response.headers.get('SweatStack-Attribution');  // null when none
 sourceLine.textContent = attribution ?? '';

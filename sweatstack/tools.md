@@ -25,12 +25,12 @@ sweatstack tool deploy
 ```
 
 - **`tool create`** creates a private tool at `https://{name}-{handle}.sweatstack.tools`, writes `sweatstack.toml`, and puts the template in `public/`: one page that signs in, loads the latest activity's Parquet with DuckDB-WASM and plots it. Build on the template rather than starting over.
-- **Ask the person** for the name (lowercase words joined by hyphens), the title, and the data the tool needs, one `--scope` each (`activities:read` by default). The name can never change.
-- **On their first tool,** pass their handle and public name with `--handle` and `--public-name`. The handle is in every tool's address and can never change, so always ask the person for it; never invent one.
+- **Ask the person** for the name (lowercase words joined by hyphens), the title, and the data the tool needs, one `--scope` each (`activities:read` by default). The name can never change. Every tool also gets `openid`, `profile` and `offline_access`, so `/api/v1/oauth/userinfo` works without asking for them.
+- **On their first tool,** pass their handle and public name with `--handle` and `--public-name`. Without them, `tool create` stops with `--handle is required` when the person has no handle yet, and uses the existing one otherwise. The handle is in every tool's address and can never change, so always ask the person for it; never invent one.
 - **`tool deploy`** checks the folder, uploads only changed files, and makes them live. Read the warnings it prints. A new tool is private: only its owner can open it.
 - **`tool deploys`** lists the kept deploys; **`tool rollback [ID]`** serves one again.
 - **Never run `tool publish`** unless the person asks: it opens the tool to everyone.
-- **"This needs your passkey":** ask the person to run `sweatstack login`, then run the command again.
+- **"This needs your passkey":** creating a tool needs a passkey confirmation from the last 24 hours (`sweatstack status` shows when it was confirmed; deploying needs only the one at login). Ask the person to run `sweatstack login`, then run the same command again: a refused `tool create` leaves the folder as it found it (CLI 0.17.4 or later).
 
 These commands need SweatStack CLI 0.17.0 or later.
 
