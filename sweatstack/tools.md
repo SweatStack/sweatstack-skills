@@ -31,10 +31,10 @@ sweatstack tool deploy
 - **`sweatstack.toml`** holds the tool's slug, folder and scopes, and an `[app]` table with the tool's own client ID, which SweatStack Tools and `tool serve` use to sign in. The page never needs it.
 - **`tool deploy`** checks the folder, uploads only changed files, and makes them live. Read the warnings it prints. A new tool is private: only its owner can open it.
 - **`tool deploys`** lists the kept deploys; **`tool rollback [ID]`** serves one again.
-- **Never run `tool publish`** unless the person asks: it opens the tool to everyone.
+- **Never run `tool publish`** unless the person asks: it opens the tool to everyone (`--unlisted`: anyone with the link). Until SweatStack Tools leaves beta it is refused, and the tool stays private. `tool unpublish` makes a tool private again. Both need a passkey confirmation from the last 15 minutes: when asked, ask the person to run `sweatstack login`.
 - **"This needs your passkey":** creating a tool needs a passkey confirmation from the last 24 hours (`sweatstack status` shows when it was confirmed; deploying needs only the one at login). Ask the person to run `sweatstack login`, then run the same command again: a refused `tool create` leaves the folder as it found it (CLI 0.17.5 or later).
 
-These commands need SweatStack CLI 0.17.0 or later.
+These commands need SweatStack CLI 0.17.0 or later; `tool unpublish` 0.18.0.
 
 ## What a Tool Can Reach
 
