@@ -30,7 +30,7 @@ sweatstack tool deploy
 - **`tool deploy`** checks the folder, uploads only changed files, and makes them live. Read the warnings it prints. A new tool is private: only its owner can open it.
 - **`tool deploys`** lists the kept deploys; **`tool rollback [ID]`** serves one again.
 - **Never run `tool publish`** unless the person asks: it opens the tool to everyone.
-- **"This needs your passkey":** creating a tool needs a passkey confirmation from the last 24 hours (`sweatstack status` shows when it was confirmed; deploying needs only the one at login). Ask the person to run `sweatstack login`, then run the same command again: a refused `tool create` leaves the folder as it found it (CLI 0.17.4 or later).
+- **"This needs your passkey":** creating a tool needs a passkey confirmation from the last 24 hours (`sweatstack status` shows when it was confirmed; deploying needs only the one at login). Ask the person to run `sweatstack login`, then run the same command again: a refused `tool create` leaves the folder as it found it (CLI 0.17.5 or later).
 
 These commands need SweatStack CLI 0.17.0 or later.
 
