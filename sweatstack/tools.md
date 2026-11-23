@@ -42,7 +42,7 @@ These commands need SweatStack CLI 0.17.0 or later; `tool unpublish` 0.18.0.
 |---|---|
 | The tool's own files | Any load, by relative path |
 | `https://app.sweatstack.no` (the API) | `fetch` only |
-| `https://maps.sweatkraft.no` (SweatStack Maps) | `fetch` only. MapLibre fetches styles, tiles and fonts this way |
+| `https://maps.sweatkraft.no` (Sweatkraft Maps) | `fetch` only. MapLibre fetches styles, tiles and fonts this way |
 | `http://localhost:*`, `http://127.0.0.1:*` | `fetch` only, after the browser asks. Safari blocks it |
 | Bluetooth and USB devices | Chromium only, after the person picks a device |
 | **Any other site** | **Blocked**: CDNs, Google Fonts, analytics, error tracking, third-party APIs and tile hosts |
@@ -149,7 +149,7 @@ Download that URL into `vendor/` and change the reference to the relative path. 
 
 ## Maps
 
-Ship MapLibre GL JS and use a SweatStack Maps style:
+Ship MapLibre GL JS and use a Sweatkraft Maps style:
 
 ```bash
 npm install maplibre-gl@6.16.0
