@@ -40,7 +40,7 @@ These commands need SweatStack CLI 0.17.0 or later.
 |---|---|
 | The tool's own files | Any load, by relative path |
 | `https://app.sweatstack.no` (the API) | `fetch` only |
-| `https://maps.sweatstack.dev` (SweatStack Maps) | `fetch` only. MapLibre fetches styles, tiles and fonts this way |
+| `https://maps.sweatkraft.no` (SweatStack Maps) | `fetch` only. MapLibre fetches styles, tiles and fonts this way |
 | `http://localhost:*`, `http://127.0.0.1:*` | `fetch` only, after the browser asks. Safari blocks it |
 | Bluetooth and USB devices | Chromium only, after the person picks a device |
 | **Any other site** | **Blocked**: CDNs, Google Fonts, analytics, error tracking, third-party APIs and tile hosts |
@@ -159,13 +159,13 @@ cp node_modules/maplibre-gl/dist/{maplibre-gl.mjs,maplibre-gl-shared.mjs,maplibr
 <div id="map" style="height: 400px"></div>
 <script type="module">
   import * as maplibregl from './vendor/maplibre-gl.mjs';
-  const map = new maplibregl.Map({ container: 'map', style: 'https://maps.sweatstack.dev/v4/styles/light.json' });
+  const map = new maplibregl.Map({ container: 'map', style: 'https://maps.sweatkraft.no/v4/styles/light.json' });
 </script>
 ```
 
 - Styles: `light`, `dark`, `white`, `grayscale`, `black`.
 - Keep the three `.mjs` files together: MapLibre finds its worker next to its module.
-- Terrain: a `raster-dem` source with `url: 'https://maps.sweatstack.dev/terrain/v1.json'`.
+- Terrain: a `raster-dem` source with `url: 'https://maps.sweatkraft.no/terrain/v1.json'`.
 - Keep MapLibre's attribution control: "© OpenStreetMap" must show on every map, and in every exported map image.
 
 ## Pyodide
