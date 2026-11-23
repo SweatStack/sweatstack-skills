@@ -123,6 +123,7 @@ const activity = await response.json();
 - **Don't use speculation rules, `<link rel="preconnect">` or `<link rel="dns-prefetch">`.** SweatStack removes them.
 - **Reach software on the person's computer only from a click,** not on page load: the browser asks first. Tell Safari users it won't work there.
 - **Never call a third-party API.** If the tool needs one and uses SweatStack data, it is a connected app with its own hosting, not a tool.
+- **Show where the data comes from.** Put the API's attribution under the title of what the tool shows, as it is, and carry it into exports ([Attribution](api.md#attribution)). The template does this. SweatStack checks it, and a tool that drops it is taken down if it isn't fixed.
 - **Never send the person's data out:** not in a URL to `location.href` or `window.open`, not through a local helper program. It breaks the developer terms and the tool is taken down.
 
 ## Check Before Deploying

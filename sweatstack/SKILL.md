@@ -23,4 +23,4 @@ Sports data platform providing auth, storage, and wearable integrations for deve
 
 **Auth:** OAuth2/PKCE authentication. See [auth.md](auth.md)
 
-**API:** Endpoints and data formats. See [api.md](api.md)
+**API:** Endpoints, data formats, and the attribution every app must show next to platform data. See [api.md](api.md)
