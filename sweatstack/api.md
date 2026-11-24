@@ -211,8 +211,8 @@ FROM PARQUET ORDER BY seconds
 
 Data from a platform such as Garmin must show where it came from, next to the data. SweatStack gives the wording: show it as it is, and never write "Garmin" yourself.
 
-- **JSON records** (activities, dailies, sources, markers, max efforts): the `attribution` field, such as `"Garmin"`. `null` when nothing needs showing.
-- **Parquet data** (`/activities/{id}/data`, `/activities/{id}/mean-max`, `/activities/longitudinal-data`, `/activities/longitudinal-mean-max`): the `SweatStack-Attribution` header, such as `Garmin` or `Data from Garmin and Strava`. Absent when nothing needs showing. Browsers can read it.
+- **The whole response**, JSON or Parquet: the `SweatStack-Attribution` header, such as `Garmin` or `Data from Garmin and Strava`. Absent when nothing needs showing. Browsers can read it. On a paged list (`/activities`, `/sources`) and the longitudinal routes it names every platform the filters match, the same on every page.
+- **Each JSON record** (activities, dailies, sources, markers, max efforts): the `attribution` field, such as `"Garmin"`. `null` when nothing needs showing.
 
 ```javascript
 // In a SweatStack Tool, call sweatstack(path) instead of fetch: see tools.md
@@ -225,7 +225,7 @@ sourceLine.hidden = !attribution;
 **Where to show it:**
 
 - Next to the title or heading of what shows the data, visible without scrolling. Not in a footer, tooltip or collapsed section.
-- A view of many records: each entry's own `attribution`, or one line for the view from the longitudinal header when the view is built from it.
+- A view of many records under one heading: the header of the response. Each entry with its own line: its `attribution`.
 - A chart drawn on a canvas: the line as text next to the chart.
 - Exports carry it too: a CSV next to the data, a PDF on every page, and an image drawn into it.
 
