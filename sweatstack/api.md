@@ -41,6 +41,8 @@ Never guess field names or enum values. The spec is the source of truth.
 
 **`summary`**: Object with per-metric aggregates — `power.mean`, `power.max`, `heart_rate.mean`, `heart_rate.max`, `distance.sum`, `altitude.gain`, etc. A metric the activity did not record is absent or null.
 
+**`summary.location.polyline`**: The activity's track as a Google encoded polyline (precision 5, latitude before longitude), on `/activities/` too, so a list can draw a small map of every activity without downloading data. `summary.location` is null without GPS; laps have none. It is simplified (at most 150 points): for a map the user zooms into, read `latitude` and `longitude` from `/activities/{id}/data`. A decoder returns `[lat, lng]`; GeoJSON and MapLibre want `[lng, lat]`. Where GPS dropped out, the line is straight. For smooth lines draw a centripetal Catmull-Rom spline (alpha 0.5), not a uniform one, which loops between unevenly spaced points.
+
 **`laps`**: Always null on `/activities/`. Populated on `/activities/{id}` and `/activities/latest` when the recording had lap markers. Each lap has `start`, `end`, `duration`, and the per-metric fields directly (`lap.power.mean`).
 
 **Nullable fields:** `summary`, `laps`, `traces`, `app_metadata` can be null. Always null-check before display.

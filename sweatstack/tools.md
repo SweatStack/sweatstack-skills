@@ -170,6 +170,7 @@ cp node_modules/maplibre-gl/dist/{maplibre-gl.mjs,maplibre-gl-shared.mjs,maplibr
 - Styles: `light`, `dark`, `white`, `grayscale`, `black`.
 - Keep the three `.mjs` files together: MapLibre finds its worker next to its module.
 - Terrain: a `raster-dem` source with `url: 'https://maps.sweatkraft.no/terrain/v1.json'`.
+- An activity's route: decode `summary.location.polyline` (see `api.md`) into a GeoJSON `LineString` source and a `line` layer, and fit the map to its bounds.
 - Keep MapLibre's attribution control: "© OpenStreetMap" must show on every map, and in every exported map image.
 
 ## Pyodide
